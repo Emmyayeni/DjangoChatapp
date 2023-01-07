@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate,logout
 from account.forms import RegistrationForm,AccountAuthenticationForm,AccountUpdateForm
 # Create your views here.
+from friend.models import *
 from django.conf import settings
 from account.models import *
 from django.core.files.storage import default_storage
@@ -12,6 +13,8 @@ import cv2
 import json
 import base64
 from django.core import files
+from friend.util import get_friend_request_or_false
+from friend.friend_request_status import *
 
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
@@ -72,7 +75,7 @@ def get_redirect_if_exists(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("home")
+    return redirect("login")
 
 def account_view(request,*args,**kwargs):
     """
@@ -96,20 +99,50 @@ def account_view(request,*args,**kwargs):
         context['email'] = account.email
         context['profile_image'] = account.profile_image.url
         context['hide_email'] = account.hide_email
+        
+        try:
+            friend_list = FriendList.objects.get(user=account)
+        except FriendList.DoesNotExist:
+            friend_list = FriendList(user=account)
+            friend_list.save() 
+        friends = friend_list.friends.all()
+        context['friends'] = friends
 
         # define stae variables
         is_self = True
+        request_sent = FriendRequestStatus.NO_REQUEST_SENT.value # range: ENUM -> friend/friend_request_status.FriendRequestStatus
         is_friend = False
+        friend_requests = None
         user = request.user
+        request_user_id = user.id
         if user.is_authenticated and user != account:
             is_self = False
+            if friends.filter(pk=user.id):
+                is_friend = True
+            else:
+                is_friend = False
+                # CASE1: request has 
+                if get_friend_request_or_false(sender=account, receiver=user) != False:
+                    request_sent = FriendRequestStatus.THEM_SENT_TO_YOU.value
+                    context['pending_friend_request_id'] = get_friend_request_or_false(sender=account, receiver=user).id
+                # CASE 2: request has been sent from you to them 
+                elif get_friend_request_or_false(sender=user, receiver=account) !=False:
+                    request_sent = FriendRequestStatus.YOU_SENT_TO_THEM.value 
+                else:   
+                    request_sent = FriendRequestStatus.NO_REQUEST_SENT.value 
         elif not user.is_authenticated:
             is_self = False
-
+        else:
+            try: 
+                friend_requests = FriendRequest.objects.filter(receiver=user,is_active=True)            
+            except:
+                pass
         context['is_self'] = is_self
         context['is_friend'] = is_friend
         context['BASE_URL'] = settings.BASE_URL
-
+        context['request_sent'] = request_sent
+        context['friend_requests'] = friend_requests
+        context['request_user_id'] = request_user_id
         return render(request,'account/account.html',context)
 
 
@@ -213,7 +246,7 @@ def crop_image(request, *args, **kwargs):
             cropWidth = int(float(str(request.POST.get("cropWidth"))))
             cropHeight = int(float(str(request.POST.get("cropHeight"))))
             if cropX <= 0:
-            	cropX = 0
+                cropX = 0
             if cropY <= 0:
                 cropY = 0
             crop_img = img[cropY:cropY+cropHeight, cropX:cropX+cropWidth]

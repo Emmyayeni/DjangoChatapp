@@ -39,9 +39,13 @@ AUTHENTICATION_BACKENDS = (
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'personal',
     'account',
     'friend',
+    'Publicchat',
+    'chat',
+    'notification',
     # third party libray
     'django.contrib.admin',
     'django.contrib.auth',
@@ -49,6 +53,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize'
+   
+    
     
 ]
 
@@ -84,6 +91,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Chatapp.wsgi.application'
+ASGI_APPLICATION = 'Chatapp.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database
@@ -105,14 +122,7 @@ DATABASES = {
     }
 }
 
-CHANNEL_LAYERS = {
-    'default':{
-        'BACKEND':'channels_redis.core.RedisChannelLayer',
-        'CONFIG':{
-            "host":[('127.0.0.1',6379)],
-        },
-    },
-}
+
 
 
 # Password validation

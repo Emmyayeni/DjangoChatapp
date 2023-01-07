@@ -24,6 +24,10 @@
 	}
 	#id_cancel{
 		color: red;
+		cursor: pointer;
+	}
+	#id_confirm{
+		cursor: pointer;
 	}
 	.material-icons{
 		font-size: 30px;
@@ -35,21 +39,21 @@
 
 
 
-<div class="container-fluid mt-5" >
+<div class="section register  d-flex flex-column align-items-center justify-content-center py-4 my-4" >
 	<div class="row justify-content-center">
 		<div class="card profile-card mt-3">
 		  <div class="card-body">
 		  	<div class="d-flex flex-column justify-content-center p-4 mt-3">
-		  		<div class="mb-2" id="id_image_crop_confirm">
-		  			<span id="id_cancel" class="material-icons"><i class="bi bi-x"></i></span>
-		  			<span id="id_confirm" class="material-icons"><i class="bi bi-check-lg"></i></span>
-		  		</div>
-		  		<div class="image-container" id="id_image_container">
-	  				<img class="border border-dark rounded-circle img-fluid mx-auto profile-image" id="id_profile_image_display" src="{{form.initial.profile_image.url}}" alt="codingwithmitch logo">
-					<div class="middle" id="id_middle_container">
-						<i class="bi bi-camera" id="id_text"></i>
-					</div>
-		  		</div>
+				<div class="mb-2" id="id_image_crop_confirm">
+					<span id="id_cancel" class="bi bi-cancel">cancel</span>
+					<span id="id_confirm" class="bi bi-check" ></span>
+				</div>
+				<div class="image-container" id="id_image_container">
+					<img class="border border-dark rounded-circle img-fluid mx-auto profile-image" id="id_profile_image_display" src="{{form.initial.profile_image.url}}" alt="codingwithmitch logo">
+				  <div class="middle" id="id_middle_container">
+					  <div class="text" id="id_text">Edit</div>
+				  </div>
+				</div>
 		  		<form class="form-signin" method="post" enctype="multipart/form-data">{% csrf_token %}
 		  			<input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
 			  		<h6 class="mt-4 field-heading">Email</h6>
@@ -199,6 +203,7 @@
 				cropHeight
 			)
 		})
+		/* Refresh the browser */
 
 		var cancel = document.getElementById("id_cancel")
 		cancel.addEventListener("click", function(event){
@@ -215,11 +220,12 @@
 		var base64str = image.substr(startIndex);
 		var decoded = atob(base64str);
 		console.log("FileSize: " + decoded.length);
-		if(decoded.length>= "{{DATA_UPLOAD_MAX_MEMORY_SIZE}}"){
+		if(decoded.length >= "{{DATA_UPLOAD_MAX_MEMORY_SIZE}}"){
 			return null
 		}
 		return base64str
 	}
+	/* the cropimage  function */
 
 	function cropImage(image, x, y, width, height){
 		base64ImageString = isImageSizeValid(image)
@@ -297,6 +303,7 @@
         }
     };
 
+	/* the properties of the image as selected */
     function setImageCropProperties(image, x, y, width, height){
 		imageFile = image
 		cropX = x

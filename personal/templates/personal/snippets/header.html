@@ -3,9 +3,9 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
-        <img src="{% static "assets/img/logo.png"%}" alt="">
-        <span class="d-none d-lg-block">NiceAdmin</span>
+      <a href="/" class="logo d-flex align-items-center">
+        <img src="{% static  "assets/img/logo.png" %}"/>
+        <span class="d-none d-lg-block">Spec Chat</span>
       </a>
     </div><!-- End Logo -->
 
@@ -110,7 +110,7 @@
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
             <li class="dropdown-header">
               You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+              <a href="{% url 'chat:private-chat-room' %}"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -146,7 +146,7 @@
 
             <li class="message-item">
               <a href="#">
-                <img src="{% static "assets/img/mess%ages-3.jpg" %}" alt="" class="rounded-circle">
+                <img src="{% static "assets/img/messages-3.jpg" %}" alt="" class="rounded-circle">
                 <div>
                   <h4>David Muldon</h4>
                   <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -158,13 +158,20 @@
               <hr class="dropdown-divider">
             </li>
 
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
+            <li class="dropdown-footer">  
+              <a href="{% url 'chat:private-chat-room'%}">Show all messages</a>
             </li>
 
           </ul><!-- End Messages Dropdown Items -->
 
-        </li><!-- End Messages Nav -->
+        </li>
+        <li class"nav-items">
+          <a href="{% url 'friend:friend_requests' user_id=request.user.id %}" class="nav-link nav-icon" >
+            <i class="bx bxs-group"></i>
+            <span class="badge bg-danger badge-number">4</span>
+          </a>
+        </li>
+        <!-- End Messages Nav -->
 
         <li class="nav-item dropdown pe-3">
 
@@ -227,3 +234,4 @@
     </nav><!-- End Icons Navigation -->
 
   </header><!-- End Header -->
+

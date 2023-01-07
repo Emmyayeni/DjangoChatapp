@@ -1,23 +1,47 @@
 <style type="text/css">
-    head{
-        font-family: "segoe UI";
-        font-weight:300;
+    .chat-wrapper {
+        overflow: auto;
     }
-    footer{
-        font-family: "segoe UI";
-        font-weight:300;
+    .message-box-wrapper {
+        margin: 0 12px;
     }
-    body{
-        background-color: #f2f2f2;
-        font-family: "segoe UI";
-        font-weight:300;
+    .message-box {
+        background-color: #576c99;
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 12px;
+        line-height: 16px;
+        width: auto;
+        max-width: 80%;
+        color: white;
     }
-    :root{
-        --main-background-color: #f2f2f2;
-        --dark-background-color: #a2a2a2;
-        ---secondary-text-color: #808080;
-        --light-primary-text-color: #0080ff;
-        
+    
+.message-wrapper.reverse .message-box {
+    background-color: #477eff;
+    color: #fff;
+}
+    .message-wrapper {
+        display: flex;
+        align-items: flex-start;
+        padding-bottom: 20px;
     }
-
+    .message-wrapper.reverse {
+        justify-content: flex-end;
+    }
+    .message-wrapper.reverse .message-box-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .message-wrapper.reverse .message-pp {
+        order: 2;
+    }
+    .message-pp {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        -o-object-fit: cover;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
 </style>
