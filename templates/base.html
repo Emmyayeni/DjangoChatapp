@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="{% static "assets/img/favicon.png"%}" rel="icon">
-    <link href="{% static "assets/img/apple-touch-icon.png"%}" rel="apple-touch-icon">
+    <title>spec chat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js" integrity="sha512-SYfDUYPg5xspsG6OOpXU366G8SZsdHOhqk/icdrYJ2E/WKZxPxze7d2HD3AyXpT7U22PZ5y74xRpqZ6A2bJ+kQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -31,10 +29,11 @@
     <link href="{% static "assets/css/style.css"%}" rel="stylesheet">
     <link href="{% static "fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/css/all.min.css"%}" rel="stylesheet">
     <link href="{% static "fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/css/fontawesome.min.css"%}" rel="stylesheet">
+    <link href="{% static "bud/styles/style.css"%}" rel="stylesheet">
     <script>hljs.highlightAll();</script>
+    
 </head>
 {% comment %} {% include 'personal/snippets/base_css.html'%} {% endcomment %}
-{% include 'personal/snippets/base_js.html'%}
 {% include 'public/snippets/base_js.html'%}
 <body>
     {% include 'personal/snippets/header.html' %}
@@ -49,28 +48,27 @@
     </main>   
     {% endblock content %}
 </body>
-
 <script src="{% static "assets/vendor/apexcharts/apexcharts.min.js"%}"></script>
 <script src="{% static "assets/vendor/bootstrap/js/bootstrap.bundle.min.js"%}"></script>
 <script src="{% static "assets/vendor/chart.js/chart.min.js"%}"></script>
 <script src="{% static "assets/vendor/echarts/echarts.min.js"%}"></script>
 <script src="{% static "assets/vendor/quill/quill.min.js"%}"></script>
-<script src="{% static "assets/vendor/tinymce/tinymce.min.js"%}"></script>
 <script src="{% static "js/jquery.min.js"%}"></script>
 <script src="{% static "fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/js/all.min.js"%}"></script>
 <script src="{% static "fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/js/fontawesome.min.js"%}"></script>
-<script src="{% static "js\javascript.min.js" %}">
-<script src="{% static 'js\python.min.js' %}">
-<script src="{% static 'js\css.min.js' %}">
-<script src="{% static 'js\json.min.js' %}">
-<script src="{% static 'js\sas.min.js' %}">
-<script src="{% static 'js\swift.min.js' %}">
-<script src="{% static 'js\kotlin.min.js' %}">
+<script src="{% static "js\javascript.min.js" %}"></script>
+<script src="{% static 'js\python.min.js' %}"></script>
+<script src="{% static 'js\css.min.js' %}"></script>
+<script src="{% static 'js\json.min.js' %}"></script>
+<script src="{% static 'js\sas.min.js' %}"></script>
+<script src="{% static 'js\swift.min.js' %}"></script>
+<script src="{% static 'js\kotlin.min.js' %}"></script>
+
+
 
 
 <!-- Template Main JS File -->
 <script src="{%  static 'assets/js/main.js'%}"></script>
-
 <script  src="{% static 'cropperjs/dist/cropper.min.js' %}"></script>
 <script  src="{% static 'cropperjs/dist/cropper.js'%}"></script>
 <script type="text/javascript">
@@ -85,5 +83,5 @@
 		}
 	}
 </script>
-{% include 'personal/snippets/footer.html'%}
+<script src="{% static 'assets/js/main.js' %}"></script>
 </html>

@@ -12,7 +12,7 @@
             timeout:5000,
             success: function(data){
                 console.log("SUCCESS", data)
-				if(data['response'] == "Successfully got the chat."){
+			    	if(data['response'] == "Successfully got the chat."){
 					chatroomId = data.chatroom_id
                     OnGetOrCreateChatroomSuccess(chatroomId)
 

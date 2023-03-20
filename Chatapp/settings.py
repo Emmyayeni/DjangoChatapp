@@ -29,17 +29,20 @@ DEBUG = True
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.101','localhost','127.0.0.1']
 AUTH_USER_MODEL = "account.Account"
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.AllowAllUsersModelBackend',
-    'account.Backend.CaseInsensitiveModelBackend'
+    'account.Backend.CaseInsensitiveModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
 )
 
 # Application definition
 
 INSTALLED_APPS = [
     'daphne',
+    'channels',
     'personal',
     'account',
     'friend',
@@ -53,10 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize'
-   
-    
-    
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +89,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'Chatapp.wsgi.application'
 ASGI_APPLICATION = 'Chatapp.asgi.application'

@@ -6,170 +6,149 @@
 
 {% block content %}
 
-<script
-  src="{% static "js/jquery.min.js" %}"></script>
-
-<style type="text/css">
-	.chat-log {
-		height: 500px;
-		overflow-x: hidden;
-		overflow-y: auto;
-		padding: 10px;
-		background-color: #fff;
-		font-size: 0.9em;
-		flex-direction: column-reverse;
-	}
-	.chat-message-input-container{
-		outline: none;
-		box-shadow: none;
-	}
-	.chat-message-input{
-		outline: none;
-		border: 1px solid #fff;
-		border-top: 2px solid var(--main-background-color);
-		
-	}
-	.message-container{
-		margin-top: 10px;
-		justify-content: start;
-	}
-	.username-span{
-		font-weight: 600;
-		margin-top: 0px;
-		margin-bottom: auto;
-		margin-left: 5px;
-		margin-right: 5px;
-	}
-	.friend-message-span{
-		font-weight: 380;
-		margin-top: 0px;
-		margin-bottom: auto;
-		margin-left: 5px;
-		margin-right: 5px;
-		font-size: 0.6em;
-		color: var(--light-primary-text-color);
-	}
-	.timestamp-span{
-		font-weight: 400;
-		font-size: 0.8em;
-		color: var(--secondary-text-color);
-	}
-	.timestamp-span:hover{
-		cursor: pointer;
-	}
-	.msg-p{
-		font-weight: 450;
-		margin-top: 5px;
-		margin-bottom: auto;
-		margin-left: 5px;
-		margin-right: 5px;
-		white-space: normal;
-		-ms-word-break: break-all;
-		word-break: break-all;
-	}
-	.profile-image{
-		width: 33px;
-		height: 33px;
-		margin-top: 0px;
-		margin-bottom: auto;
-	}
-	.profile-image-small{
-		width: 25px;
-		height: 25px;
-		margin-top: 0px;
-		margin-bottom: auto;
-		margin-right: 5px;
-	}
-	.profile-image:hover{
-		cursor: pointer;
-	}
-	.profile-image-small:hover{
-		cursor: pointer;
-	}
-	.username-span:hover{
-		cursor: pointer;
-	}
-	.material-icons:hover{
-		cursor: pointer;
-	}
-	.card {
-		border-radius: 12px;
-	}
-	
-	#id_chatroom_loading_spinner{
-		position: absolute;
-	}
-	.friend-container:hover{
-		background: var(--main-background-color);
-		cursor: pointer;
-	}
-	.friends-list-container{
-		max-height: 500px;
-		overflow-y: scroll;
-	}
-</style>
-
-<main class="main mt-5 pt-2">
-    <div class="contai ner mt-5">
-        <div class="row">
-            <div class="col-sm-9 m-0 p-2">
-                <div class="card" id="id_chatroom_card">
-                    <div class="d-flex flex-row align-items-center card-header" id="id_room_title">
-                    <a class="d-flex flex-row" target="_blank" id="id_user_info_container">
-                        <img class="profile-image rounded-circle img-fluid" id="id_other_user_profile_image" src="{% static 'img/avatar.png' %}">
-                        <h3 class="ml-2" id="id_other_username"></h3>
-                    </a>
-                    
-                    </div>
-                    <div class="card-body p-1">
-                        <div class="d-flex flex-column" id="id_chat_log_container">
-                        
-                            <div class="d-flex flex-row justify-content-center" id="id_chatroom_loading_spinner_container">
-                                <div class="spinner-border text-primary"  id="id_chatroom_loading_spinner" role="status"  style="display: none; ">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                            <div class="d-flex chat-log" id="id_chat_log">
-                                
-                            </div>
-                            <span class="{% if not debug %}d-none{% endif %} page-number" id="id_page_number">1</span>
-                            
-                            <div class="d-flex flex-row chat-message-input-container">
-                                <textarea class="flex-grow-1 chat-message-input" id="id_chat_message_input"></textarea>
-                                <button class="btn btn-primary chat-message-submit-button" id="id_chat_message_submit" >
-                                    <span class="fa fa-paper-plane">send
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-3 m-0 p-2">
-                <div class="card">
-                    <div class="d-flex flex-row align-items-center card-header">
-                        <h3 >Friends</h3>
-                    </div>
-                    <div class="card-body p-1">	
-                        <div class="d-flex flex-column friends-list-container ">
-                            {% for x in m_and_f %}
-                            <div class="d-flex flex-row p-2 friend-container flex-grow-1" onclick="onSelectFriend('{{x.friend.id}}')" id="id_friend_container_{{x.friend.id}}">
-                                <img class="profile-image rounded-circle img-fluid" id="id_friend_img_{{x.friend.id}}" src="{% static 'img/avatar.png' %}" >
-                                <div class="d-flex flex-column">
-                                    <span class="username-span">{{x.friend.username}}</span>
-                                    <span class="friend-message-span">{{x.message|truncatechars:20}}</span>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+<script src="{% static "js/jquery.min.js" %}"></script>
+<script src="{% static "bud/tinymce.min.js" %}"></script>
+<p class="d-none" id="id_page_number">0</p>
+<main class=" pt-4 profile-page layout layout--2">
+  <div class="containerm d-block d-lg-none">
+  <div class="friend-list clearfix">
+    <ul>
+      {% for x in m_and_f %}
+      <li onclick="onSelectFriend('{{x.friend.id}}')" id="id_friend_containe_{{x.friend.id}}">
+        <span class="messages">
+          
+        </span>
+        <img  src="{% static 'img/avatar.png' %}" id="id_friend_img_{{x.friend.id}}"  alt="" />
+        <span class="name username-span">{{x.friend.username}}
+              <span class="status">
+                Active 2h ago
+              </span>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+  <div class="container">
+    <!-- Room Start -->
+    <div class="room">
+      <div class="room__top">
+        <div class="room__topLeft">
+          <a href="/">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>arrow-left</title>
+              <path
+                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"
+              ></path>
+            </svg>
+          </a>
+          <h3>conversations</h3>
         </div>
-    </div>
 
-    
+        <div class="room__topRight">
+          <a href="#">
+            <svg
+              enable-background="new 0 0 24 24"
+              height="32"
+              viewBox="0 0 24 24"
+              width="32"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <title>edit</title>
+              <g>
+                <path d="m23.5 22h-15c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h15c.276 0 .5.224.5.5s-.224.5-.5.5z" />
+              </g>
+              <g>
+                <g>
+                  <path
+                    d="m2.5 22c-.131 0-.259-.052-.354-.146-.123-.123-.173-.3-.133-.468l1.09-4.625c.021-.09.067-.173.133-.239l14.143-14.143c.565-.566 1.554-.566 2.121 0l2.121 2.121c.283.283.439.66.439 1.061s-.156.778-.439 1.061l-14.142 14.141c-.065.066-.148.112-.239.133l-4.625 1.09c-.038.01-.077.014-.115.014zm1.544-4.873-.872 3.7 3.7-.872 14.042-14.041c.095-.095.146-.22.146-.354 0-.133-.052-.259-.146-.354l-2.121-2.121c-.19-.189-.518-.189-.707 0zm3.081 3.283h.01z"
+                  />
+                </g>
+                <g>
+                  <path
+                    d="m17.889 10.146c-.128 0-.256-.049-.354-.146l-3.535-3.536c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.536 3.536c.195.195.195.512 0 .707-.098.098-.226.146-.354.146z"
+                  />
+                </g>
+              </g>
+            </svg>
+          </a>
+          <a href="#">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>remove</title>
+              <path
+                d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+
+        <!-- <button class="action-button" data-id="120" data-delete-url="https://randomuser.me/api/3324923"
+        data-edit-url="profile.html">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+          <title>ellipsis-horizontal</title>
+          <path
+            d="M16 7.843c-2.156 0-3.908-1.753-3.908-3.908s1.753-3.908 3.908-3.908c2.156 0 3.908 1.753 3.908 3.908s-1.753 3.908-3.908 3.908zM16 1.98c-1.077 0-1.954 0.877-1.954 1.954s0.877 1.954 1.954 1.954c1.077 0 1.954-0.877 1.954-1.954s-0.877-1.954-1.954-1.954z">
+          </path>
+          <path
+            d="M16 19.908c-2.156 0-3.908-1.753-3.908-3.908s1.753-3.908 3.908-3.908c2.156 0 3.908 1.753 3.908 3.908s-1.753 3.908-3.908 3.908zM16 14.046c-1.077 0-1.954 0.877-1.954 1.954s0.877 1.954 1.954 1.954c1.077 0 1.954-0.877 1.954-1.954s-0.877-1.954-1.954-1.954z">
+          </path>
+          <path
+            d="M16 31.974c-2.156 0-3.908-1.753-3.908-3.908s1.753-3.908 3.908-3.908c2.156 0 3.908 1.753 3.908 3.908s-1.753 3.908-3.908 3.908zM16 26.111c-1.077 0-1.954 0.877-1.954 1.954s0.877 1.954 1.954 1.954c1.077 0 1.954-0.877 1.954-1.954s-0.877-1.954-1.954-1.954z">
+          </path>
+        </svg>
+      </button> -->
+      </div>
+      <div class="room__box scroll">
+        <div class="room__header scroll">
+          <div class="room__hosted">
+            <a href="" id="id_user_info_container" class="room__author">
+              <div class="avatar avatar--small">
+                <img id="id_other_user_profile_image" src="{% static 'img/avatar.png' %}" />
+              </div>
+              <span id="id_other_username"></span>
+            </a>
+          </div>
+        </div>
+        <div class="room__conversation">
+          <div class="threads_chat scroll" id="threads-scroll">
+            <div class="spinner-border text-primary" id="id_chatroom_loading_spinner" role="status"  style="display: none; ">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room__message">
+        <div class="d-flex flex-row chat-message-input-container">
+          <textarea class="flex-grow-1 chat-message-input" id="id_chat_message_input"></textarea>
+          <button class="btn btn-primary chat-message-submit-button" id="id_chat_message_submit" >
+              <span class="fa fa-paper-plane">send
+              </span>
+          </button>
+      </div>
+      to use emoji press window + dot(.)
+      </div>
+    </div>
+    <!-- Room End -->
+
+    <!--   Start -->
+    <div class="participants">
+      <h3 class="participants__top">Friends <span>(5.3k Joined)</span></h3>
+      <div class="participants__list scroll">
+        {% for x in m_and_f %}
+        <div class="participant" onclick="onSelectFriend('{{x.friend.id}}')" id="id_friend_container_{{x.friend.id}}">
+          <div class="avatar avatar--medium">
+            <img id="id_friend_img_{{x.friend.id}}" src="{% static 'img/avatar.png' %}" />
+          </div>
+          <p>
+            <span class="username-span">{{x.friend.username}}</span>
+            <span class="friend-message-span">{{x.message|truncatechars:20}}</span>
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <!--  End -->
+  </div>
 <!-- Client Error MODAL -->
     <button type="button" id="id_trigger_client_error_modal" class="d-none btn btn-primary" data-toggle="modal" data-target="#id_client_error_modal">
     </button>
@@ -283,7 +262,7 @@
         console.log(datam)
 
         // display the progress bar?
-        displayChatroomLoadingSpinner(datam.display_progress_bar)
+       // displayChatroomLoadingSpinner(datam.display_progress_bar)
 
         // Handle errors (ClientError)
         if (datam.error) {
@@ -315,6 +294,7 @@
         if(datam.messages_payload){
             handleMesagesPayload(datam.messages,datam.new_page_number)
         }
+        
     };
 
     chatSocket.addEventListener("open", function(e){
@@ -400,7 +380,7 @@ function handleUserInfoPayload(user_info){
     }
     
     function chatLogScrollListener(e){
-        var chatLog = document.getElementById("id_chat_log")
+        var chatLog = document.getElementById("threads-scroll")
         if((Math.abs(chatLog.scrollTop) + 2) >= (chatLog.scrollHeight - chatLog.offsetHeight)){
             getRoomChatMessages()
         }
@@ -408,11 +388,11 @@ function handleUserInfoPayload(user_info){
     }
 
     function enableChatLogScrollListener(){
-        document.getElementById("id_chat_log").addEventListener("scroll",
+        document.getElementById("threads-scroll").addEventListener("scroll",
         chatLogScrollListener)
     }
     function disableChatLogScrollListener(){
-        document.getElementById("id_chat_log").removeEventListener("scroll",
+        document.getElementById("threads-scroll").removeEventListener("scroll",
         chatLogScrollListener)
     }
     function displayChatroomLoadingSpinner(isDisplayed){
@@ -423,99 +403,141 @@ function handleUserInfoPayload(user_info){
             spinner.style.display = "none"
         }
     }
-
-    function CreatChatMessageElelement(msg,msg_id,username,profile_image,user_id,timestamp,maintainPosition,isNewMessage){
-        var chatLog = document.getElementById("id_chat_log")
-        var newMessageDiv = document.createElement('div')
-        newMessageDiv.classList.add("d-flex","flex-row","message-container","direct-chat-msg")
-        var profileImage = document.createElement("img")
-        profileImage.addEventListener("click",function(e){
-            selectUser(user2_id)
-        })
-        profileImage.classList.add("profile-image")
-		profileImage.classList.add("rounded-circle")
-		profileImage.classList.add("img-fluid")
-        profileImage.src = "{% static 'img/avatar.png' %}"
-
-        var profile_image_id = "id_profile_image_" + msg_id
-		profileImage.id = profile_image_id
-        
-        newMessageDiv.appendChild(profileImage)
-        var div1 = document.createElement("div")
-        div1.classList.add('d-flex','flex-column')
-
-        var div2 = document.createElement('div')
-        div2.classList.add('d-flex',"flex-row")
-
-        var usernamespan = document.createElement("span")
-        usernamespan.innerHTML = username
-        usernamespan.classList.add("username-span")
-        usernamespan.addEventListener("click",function(e){
-            selectUser(user_id)
-        })
-        div1.appendChild(usernamespan)
-        var timestampspan = document.createElement("span")
-        timestampspan.classList.add('d-flex','align-items-center','timestamp-span')
-        timestampspan.addEventListener("circle",function(e){
-            selectUser(user_id)
-        })
-        div2.appendChild(timestampspan)
-        div1.appendChild(div2)
-
-        var msP = document.createElement("p")
-        //msP.innerHTML = validatText(msg)
-        msP.innerHTML = msg
-        msP.classList.add("msg-p")
-        msP.classList.add("direct-chat-text")
-        div1.appendChild(msP)
-        newMessageDiv.appendChild(div1)
-
-        if(isNewMessage){
-            chatLog.insertBefore(newMessageDiv,chatLog.firstChild)
-        }else{
-            chatLog.appendChild(newMessageDiv)
-        }
-
-        if (!maintainPosition){
-            chatLog.scrollTop = chatLog.scrollHeight
-
-        }
-        preloadImage(profile_image, profile_image_id)
+function CreatChatMessageElelement(msg,msg_id,username,profile_image,user_id,timestamp,maintainPosition,isNewMessage){
+  var chatLog = document.getElementById("threads-scroll");
+  var profile_image_id = "id_profile_image_" + msg_id;
+  function get(){
+     if('{{request.user.id}}' == user_id ){
+    return(
+      `<div class="thread__delete">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+          <title>remove</title>
+          <path
+            d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
+          ></path>
+        </svg>
+      </div>`
+    )
+  }else{
+    return ' '
+  }
+}
+  var ourHtml = `
+  <div class="left">
+    <div class="avatar avatar--small">
+      <img id=${profile_image_id} src="{% static 'img/avatar.png' %}"/>
+    </div>
+    <div class="msg_lead">
+    <div class="thread__top">
+      <div class="thread__author">
+        <a href="#" class="thread__authorInfo">
+          <span>@${username}</span>
+        </a>
+        <span class="thread__date">${timestamp}</span>
+      </div>
+      ${get()}
+    </div>
+    <div class="message parker">
+      ${msg}
+    </div>
+  </div>
+  </div>
+  `
+  var myHtml = `
+  <div class="thread">
+    <div class="avatar avatar--small">
+      <img id=${profile_image_id} src="{% static 'img/avatar.png' %}"/>
+    </div>
+    <div class="msg_lead1">
+    <div class="thread__top">
+      <div class="thread__author">
+        <a href="#" class="thread__authorInfo">
+          <span>@${username}</span>
+        </a>
+        <span class="thread__date">${timestamp}</span>
+      </div>
+      ${get()}
+    </div>
+    <div class="message parker">
+      ${msg}
+    </div>
+  </div>
+  </div>
+  `
+  if(isNewMessage){
+    if('{{request.user.id}}' == user_id ){
+      chatLog.insertAdjacentHTML("beforeend",myHtml)
+    }else{
+      chatLog.insertAdjacentHTML("beforeend",ourHtml)
     }
-    function createConnectedDisconnectedElement(msg, msd_id, profile_image, user_id){
-		var chatLog = document.getElementById("id_chat_log")
-
-		var newMessageDiv = document.createElement("div")
-		newMessageDiv.classList.add("d-flex")
-		newMessageDiv.classList.add("flex-row")
-		newMessageDiv.classList.add("message-container")
-
-		var profileImage = document.createElement("img")
-		profileImage.addEventListener("click", function(e){
-			selectUser(user_id)
-		})
-		profileImage.classList.add("profile-image")
-		profileImage.classList.add("rounded-circle")
-		profileImage.classList.add("img-fluid")
-		profileImage.src = "{% static 'codingwithmitch/dummy_image.png' %}"
-		var profile_image_id = "id_profile_image_" + msg_id
-		profileImage.id = profile_image_id
-		newMessageDiv.appendChild(profileImage)
-
-	   	var usernameSpan = document.createElement("span")
-		usernameSpan.innerHTML = msg
-		usernameSpan.classList.add("username-span")
-		usernameSpan.addEventListener("click", function(e){
-			selectUser(user_id)
-		})
-		newMessageDiv.appendChild(usernameSpan)
-
-		chatLog.insertBefore(newMessageDiv, chatLog.firstChild)
-
-		preloadImage(profile_image, profile_image_id)
+    
+  }
+  else{
+    if('{{request.user.id}}' == user_id ){
+    chatLog.insertAdjacentHTML("afterbegin",myHtml)
+    }else{
+      chatLog.insertAdjacentHTML("afterbegin",ourHtml)
+    }
+  }
+  if(!maintainPosition){
+    chatLog.scrollTop = chatLog.scrollHeight
+  }
+  preloadImage(profile_image, profile_image_id)
+}
+function createConnectedDisconnectedElement(msg, msd_id, profile_image, user_id){
+  var chatLog = document.getElementById("threads-scroll");
+  var profile_image_id = "id_profile_image_" + msg_id
+  var ourHtml = `
+    <div class="thread " >
+      <div class="thread__top">
+        <div class="thread__author">
+          <a href="#" class="thread__authorInfo">
+            <div class="avatar avatar--small">
+              <img id=${profile_image_id} src="{% static 'img/avatar.png' %}"/>
+            </div>
+          </a>
+        </div>
+       if("{{request.user.id}}" =="{{user_id}}" ){
+          <div class="thread__delete">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>remove</title>
+              <path
+                d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
+              ></path>
+            </svg>
+          </div>
+        }
+      </div>
+      <div class="thread__details">
+       ${msg}
+      </div>
+    </div>
+  `
+  preloadImage(profile_image, profile_image_id)
+ }
+    function selectUser(user_id){
+        // Weird work-around for passing arg to url
+        var url = "{% url 'account:view' user_id=53252623623632623 %}".replace("53252623623632623", user_id)
+        var win = window.open(url, "_blank")
+        win.focus()
+    }
+    
+    function showClientErrorModal(message){
+        document.getElementById("id_client_error_modal_body").innerHTML = message
+        document.getElementById("id_trigger_client_error_modal").click()
+    }
+    
+    function displayChatroomLoadingSpinner(isDisplayed){
+        var spinner = document.getElementById("id_chatroom_loading_spinner")
+        if(isDisplayed){
+            spinner.style.display = "block"
+        }
+        else{
+            spinner.style.display = "none"
+        }
  	}
     function clearChatLog(){
-        document.getElementById("id_chat_log").innerHTML = ""   
+        document.getElementById("threads-scroll").innerHTML = ""   
     }
     function setPageNumber(pageNumber){
         document.getElementById("id_page_number").innerHTML = pageNumber
@@ -550,18 +572,20 @@ function handleUserInfoPayload(user_info){
         win.focus()
     }
     function highlightFriend(userId){
-        document.getElementById(`id_friend_container_${userId}`).style.background = "#f2f2f2"
+        document.getElementById(`id_friend_container_${userId}`).style.borderRight= "2px solid #83b4dd"
+        document.getElementById(`id_friend_containe_${userId}`).classList.add('active')
     }
     function clearHighlightedFriend(){
 		{% if m_and_f %}
 			{% for x in m_and_f %}
-				document.getElementById("id_friend_container_{{x.friend.id}}").style.background = ""
+				document.getElementById("id_friend_container_{{x.friend.id}}").style.borderRight = ""
+        document.getElementById("id_friend_containe_{{x.friend.id}}").classList.remove('active')
 			{% endfor %}
 		{% endif %}
 
 		// clear the profile image and username of current chat
 		document.getElementById("id_other_user_profile_image").classList.add("d-none")
-		document.getElementById("id_other_user_profile_image").src = "{% static 'codingwithmitch/dummy_image.png' %}"
+		document.getElementById("id_other_user_profile_image").src = "{% static 'img/avatar.png' %}"
 		document.getElementById("id_other_username").innerHTML = ""
 	}
     function createOrReturnPrivateChat(id){
@@ -592,3 +616,4 @@ function handleUserInfoPayload(user_info){
 	}
 </script>
 {% endblock content %}
+

@@ -7,100 +7,182 @@
 
 
 <style type="text/css">
-	.profile-image{
-		max-height: 100px;
-		max-width: 100px;
-	}
-	.profile-image{
-		border-radius: 12px;
-	}
-	.card{
-		border-radius: 12px;
-	}
-	.friends-text{
-		color: #000;
-		font-weight: 500;
-	}
-	.friends-text-container{
-		border: 1px solid #cccccc;
-		border-radius: 12px;
-	}
-	.friends-btn:hover {
-		background-color: #bfbfbf;
-		border-color: #bfbfbf;
-	}
-	.dropdown-toggle::after { 
-		content: none; 
-	}
-	.profile-link{
-		color: #000;
-	}
-	.checkmark-icon{
-		color: green;
-	}
-	.cancel-icon{
-		color: red;
-	}
+.friend-list {
+  font-family: "Montserrat", sans-serif;
+}
+.friend-list .friend-box {
+  position: relative;
+  display: inline-block;
+  width: 170px;
+  height: 140px;
+  background-color: #3f4156;
+  margin: 20px;
+  border-radius: 10px;
+}
+.friend-list .friend-profile {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -20px;
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+  background-size: cover;
+  background-position: center;
+  border: 3px rgba(255, 255, 255, 0.7) solid;
+  box-shadow: 0px 0px 15px #aaa;
+}
+.friend-list .name-box {
+  text-align: center;
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  color: #4F7091;
+  font-size: 18px;
+}
+.friend-list .user-name-box {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+}
+.friend-list .level-indicator {
+  background-color: #00a5db;
+  color: #fff;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 10px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+
+.friend-requests {
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+}
+.friend-requests .friend-box {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+  height: 140px;
+  background-color: #3f4156;
+  margin: 20px;
+  border-radius: 10px;
+}
+.friend-requests .friend-profile {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+  background-size: cover;
+  background-position: center;
+  border: 3px rgba(255, 255, 255, 0.7) solid;
+  box-shadow: 0px 0px 15px #aaa;
+}
+.friend-requests .name-box {
+  text-align: left;
+  position: absolute;
+  top: 20px;
+  left: 90px;
+  width: 200px;
+  color: #4F7091;
+  font-size: 18px;
+}
+.friend-requests .user-name-box {
+  position: absolute;
+  top: 50px;
+  left: 90px;
+  width: 200px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 16px;
+}
+.friend-requests .request-btn-row {
+  position: absolute;
+  left: 10px;
+  width: calc(100% - 20px);
+  bottom: 10px;
+  text-align: center;
+}
+.friend-requests .request-btn-row .friend-request {
+  width: 35%;
+  margin: 5px 5%;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  padding: 5px;
+  cursor: pointer;
+}
+.friend-requests .request-btn-row .decline-request {
+  background-color: #FF6666;
+  color: #fff;
+}
+.friend-requests .request-btn-row .decline-request:hover {
+  background-color: #993333;
+}
+.friend-requests .request-btn-row .accept-request {
+  background-color:  #5995fd;
+  color: #fff;
+}
+.friend-requests .request-btn-row .accept-request:hover {
+  background-color: #419764;
+}
+.friend-requests .request-btn-row .fr-request-pending {
+  position: relative;
+  top: -10px;
+  color: #17406f;
+  font-weight: bold;
+}
+.friend-requests .request-btn-row.disappear {
+  display: none;
+}
 </style>
 
-<div class="container mt-5 pt-2">
-	<div class=" p-2">
+	<div class="friend-requests pt-5">
 
 		{% if accounts %}
-		<div class="d-flex flex-row flex-wrap">
+
 		{% for account in accounts %}
-		<div class="card flex-row flex-grow-1  mx-2 my-2 align-items-center">
-			<a class="profile-link" href="{% url 'account:view' user_id=account.0.id %}">
-				<div class="card-image m-2">
-					<img class="img-fluid profile-image rounded-circle" src="{{account.0.profile_image.url}}" alt="">
-				</div>
-			</a>
-			<a class="profile-link" href="{% url 'account:view' user_id=account.0.id %}">
-				<div class="card-center d-flex  flex-column ">
-					<h4 class="justify-content-center align-items-center px-5 pt-2">{{account.0.username}}</h4>
+		<div class="friend-box">
+			<img src="{{account.0.profile_image.url}}" class="friend-profile">
+			<div class="name-box">
+				{{account.0.username}}
+			</div>
+			<div class="user-name-box">
 					{% if account.1 %}
-					<p class="card-text"><a href="#" onclick="createOrReturnPrivateChat('{{account.0.id}}')">Send a Message</a></p>
-					{% endif %}
-					
-				
-				<div class="d-flex flex-column card-right flex-grow-1 justify-content-end mx-2">
-				{% if account.1 %}
-					<div class="d-flex flex-column  p-3">
-						<p class="friends-text m-auto">
-							Friends 
-						</p>
-						<button class="btn btn-primary">
-							send Message
-						</button>
-					</div>
-				{% else %}
+						Friends
+					{% else %}
 					{% if account.0 !=  request.user %}
-						<div class="d-flex flex-column p-3">
-							<p class="friends-text m-auto">
-								Not Friends 
-							</p>
-							<button class="btn btn-primary w-80">Send request</button>
-						</div>
+						Not Friends
+					{% else %}
+					{% if account.0 == request.user %}
+						This is you
 					{% endif %}
-				{% endif %}
-				{% if account.0 == request.user %}
-					<div class="d-flex flex-column  p-3">
-						<p class="friends-text m-auto">
-							This is you 
-						</p>
-						<button class="btn btn-primary">
-							view profile
-						</button>
-					</div>
+					{% endif %}
+					{% endif %}
+
+			</div>
+			<div class="request-btn-row">
+
+				{% if account.1 %}
+					<button class="friend-request accept-request" onclick="createOrReturnPrivateChat('{{account.0.id}}')">message</button>
+					<button class="friend-request decline-request" onclick="removeFriend('{{account.0.id}}', onFriendRemoved)">Unfriend</button>
+				{% elif account.0 == request.user%}
+				<button class="friend-request accept-request">view Profile</button>
+				{% else %}
+					<button class="friend-request accept-request" id="id_send_friend_request_btn" onClick="sendFriendRequest("{{account.0.id}}", onFriendRequestSent)">Add Friend</button>
 				{% endif %}
 			</div>
-		</div>
 	</div>
-		</a>
-		{% if forloop.counter|divisibleby:2 %}
-		</div><div class="d-flex flex-row flex-wrap">
-		{% endif %}
-		
 		{% endfor %}
 		
 		{% else %} <!-- If no friends -->
@@ -114,6 +196,68 @@
 </div>
 
 
+{%  include 'chat/snippets/create_or_return_privatechat.html' %}
+<script type="text/javascript">
+
+	// called from base_js.html
+	//preloadImage("{{profile_image|safe}}", 'id_profile_image')
+
+	function onFriendRequestSent(){
+		location.reload();
+	}
+
+	function onFriendRequestCancelled(){
+		location.reload();
+	}
+
+	function onFriendRemoved(){
+		location.reload();
+	}
+
+	function onFriendRequestAccepted(){
+		location.reload();
+	}
+
+	function onFriendRequestDeclined(){
+		location.reload();
+	}
+
+
+	var sendFriendRequestBtn = document.getElementById("id_send_friend_request_btn")
+	if (sendFriendRequestBtn != null){
+		sendFriendRequestBtn.addEventListener("click", function(){
+			sendFriendRequest("{{account.0.id}}", onFriendRequestSent)
+		})
+	}
+
+	var cancelFriendRequestBtn = document.getElementById("id_cancel_friend_request_btn")
+	if(cancelFriendRequestBtn != null){
+		cancelFriendRequestBtn.addEventListener("click", function(){
+			cancelFriendRequest("{{id}}", onFriendRequestCancelled)
+		})
+	}
+
+	var removeFriendBtn = document.getElementById("id_unfriend_btn")
+	if (removeFriendBtn != null){
+		removeFriendBtn.addEventListener("click", function(){
+			removeFriend("{{id}}", onFriendRemoved)
+		})
+	}
+
+	function triggerAcceptFriendRequest(friend_request_id){
+		acceptFriendRequest(friend_request_id, onFriendRequestAccepted)
+	}
+
+	function triggerDeclineFriendRequest(friend_request_id){
+		declineFriendRequest(friend_request_id, onFriendRequestDeclined)
+	}
+
+</script>
+{% include 'friend/snippets/send_friendrequest.html' %}
+{% include 'friend/snippets/remove_friend.html' %}
+{% include 'friend/snippets/accept_friendrequest.html' %}
+{% include 'friend/snippets/cancel_friend_request.html'%}
+{% include 'chat/snippets/create_or_return_privatechat.html'%}
 
 
 {% endblock content %}

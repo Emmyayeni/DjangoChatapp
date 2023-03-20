@@ -3,13 +3,13 @@ from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.db import models
 
-from Publicchat.models import PublicChatRoom,PublicRoomChatMessage
+from Publicchat.models import PublicChatRoom,PublicRoomChatMessage,Topic
 
 # Register your models here.
 
 class PublicChatRoomAdmin(admin.ModelAdmin):
-    list_display = ['id','title', ]
-    search_fields = ['id', 'title', ]
+    list_display = ['id','name','topic' ]
+    search_fields = ['id', 'name','topic' ]
     readonly_fields = ['id',]
 
     class Meta:
@@ -17,6 +17,8 @@ class PublicChatRoomAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PublicChatRoom, PublicChatRoomAdmin)
+
+admin.site.register(Topic)
 
 # Resource: http://masnun.rocks/2017/03/20/django-admin-expensive-count-all-queries/
 

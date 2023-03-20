@@ -1,201 +1,331 @@
 {% load static %}
+<style type="text/css">
+	.friend-list {
+	  font-family: "Montserrat", sans-serif;
+	}
+	.friend-list .friend-box {
+	  position: relative;
+	  display: inline-block;
+	  width: 170px;
+	  height: 140px;
+	  background-color: #3f4156;
+	  margin: 20px;
+	  border-radius: 10px;
+	}
+	.friend-list .friend-profile {
+	  position: absolute;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  top: -20px;
+	  border-radius: 50%;
+	  height: 70px;
+	  width: 70px;
+	  background-size: cover;
+	  background-position: center;
+	  border: 3px rgba(255, 255, 255, 0.7) solid;
+	  box-shadow: 0px 0px 15px #aaa;
+	}
+	.friend-list .name-box {
+	  text-align: center;
+	  position: absolute;
+	  top: 55px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: 100%;
+	  color: #4F7091;
+	  font-size: 18px;
+	}
+	.friend-list .user-name-box {
+	  position: absolute;
+	  top: 80px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: 100%;
+	  text-align: center;
+	  font-size: 12px;
+	}
+	.friend-list .level-indicator {
+	  background-color: #00a5db;
+	  color: #fff;
+	  display: inline-block;
+	  padding: 5px 10px;
+	  border-radius: 10px;
+	  position: absolute;
+	  bottom: 10px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  font-size: 12px;
+	}
+	
+	.friend-requests {
+	  font-family: "Montserrat", sans-serif;
+	  text-align: center;
+	}
+	.friend-requests .friend-box {
+	  position: relative;
+	  display: inline-block;
+	  width: 300px;
+	  height: 140px;
+	  background-color: #3f4156;
+	  margin: 20px;
+	  border-radius: 10px;
+	}
+	.friend-requests .friend-profile {
+	  position: absolute;
+	  left: 10px;
+	  top: 10px;
+	  border-radius: 50%;
+	  height: 70px;
+	  width: 70px;
+	  background-size: cover;
+	  background-position: center;
+	  border: 3px rgba(255, 255, 255, 0.7) solid;
+	  box-shadow: 0px 0px 15px #aaa;
+	}
+	.friend-requests .name-box {
+	  text-align: left;
+	  position: absolute;
+	  top: 20px;
+	  left: 90px;
+	  width: 200px;
+	  color: #4F7091;
+	  font-size: 18px;
+	}
+	.friend-requests .user-name-box {
+	  position: absolute;
+	  top: 50px;
+	  left: 90px;
+	  width: 200px;
+	  text-align: left;
+	  font-size: 12px;
+	  line-height: 16px;
+	}
+	.friend-requests .request-btn-row {
+	  position: absolute;
+	  left: 10px;
+	  width: calc(100% - 20px);
+	  bottom: 10px;
+	  text-align: center;
+	}
+	.friend-requests .request-btn-row .friend-request {
+	  width: 35%;
+	  margin: 5px 5%;
+	  border-radius: 5px;
+	  border: 2px solid transparent;
+	  padding: 5px;
+	  cursor: pointer;
+	}
+	.friend-requests .request-btn-row .decline-request {
+	  background-color: #FF6666;
+	  color: #fff;
+	}
+	.friend-requests .request-btn-row .decline-request:hover {
+	  background-color: #993333;
+	}
+	.friend-requests .request-btn-row .accept-request {
+	  background-color:  #5995fd;
+	  color: #fff;
+	}
+	.friend-requests .request-btn-row .accept-request:hover {
+	  background-color: #419764;
+	}
+	.friend-requests .request-btn-row .fr-request-pending {
+	  position: relative;
+	  top: -10px;
+	  color: #17406f;
+	  font-weight: bold;
+	}
+	.friend-requests .request-btn-row.disappear {
+	  display: none;
+	}
+	</style>
 
 {% include  'account/base_testcss.html' %}
 
 
-<main class="bg-gray-100 bg-opacity-25">
-
-  <div class="lg:w-8/12 lg:mx-auto mb-8">
-
-    <header class="flex flex-wrap items-center p-4 md:py-8">
-
-      <div class="md:w-3/12 md:ml-16">
-        <!-- profile image -->
-        <img class="w-20 h-20 md:w-40 md:h-40 object-cover rounded-full
-            border-2 border-pink-600 p-1" src="{{profile_image}}" alt="profile">
-      </div>
-
-      <!-- profile meta -->
-      <div class="w-8/12 md:w-7/12 ml-4">
-        <div class="md:flex md:flex-wrap md:items-center mb-4">
-          <h2 class="text-3xl inline-block font-light md:mr-2 mb-2 sm:mb-0">
-            @{{username}}_
-          </h2>
-          
-
-          <!-- badge -->
-          <span class="inline-block fas fa-certificate fa-lg text-blue-500 
-                               relative mr-6 text-xl transform -translate-y-2 " aria-hidden="false" >
-            <i class="fas fa-check text-white text-xs absolute inset-x-0
-                               "></i>
-          </span>
-          {% if is_self %}
-          <a href="{% url 'account:edit' user_id=id  %}" class="bg-blue-500 px-2 py-1  mx-2
-          text-white font-semibold text-sm rounded block text-center 
-          sm:inline-block block ">edit profile</a>
-
-          <a href="{% url 'account:edit' user_id=id %}" class=" 
-          text-black font-bold text-bold  block text-center">
-          <i class="bi bi-gear"></i>
-          
-             </a>
-            {% endif  %}
-            {% if request.user.is_authenticated%}
-              {% if request_sent == 0 %}
-              <div class="flex ">
-                <button id="id_confirm_{{id}}" onclick='triggerAcceptFriendRequest("{{pending_friend_request_id}}")' class="bg-blue-500 px-2 py-1 
-                text-white font-semibold text-sm rounded block text-center border-none mr-2
-                sm:inline-block block">Accept</button>
-                <button id="id_cancel_{{id}}" onclick='triggerDeclineFriendRequest("{{pending_friend_request_id}}")' class="bg-red-600 px-2 py-1 
-                text-white font-semibold text-sm rounded block text-center border-none 
-                sm:inline-block block">Decline</button>
-              </div>
-              {% endif %}
-
-             {% if is_friend == False and is_self == False %}
-                <!-- you sent them a request -->
-              {% if request_sent == 1 %}
-                <button  id="id_cancel_friend_request_btn" class="bg-red-500 px-2 py-1
-                border-none 
-                text-white font-semibold text-sm rounded block text-center border-none 
-                sm:inline-block block" onclick='cancelFriendRequest("{{id}}", onFriendRequestCancelled)'>Cancel Request</button>
-              {% endif %}
-              {% if request_sent == -1 %}
-              <button id="id_send_friend_request_btn" class="bg-blue-500 px-2 py-1 
-              text-white font-semibold text-sm rounded block text-center border-none
-              sm:inline-block block">Send friend Request</button>
-              {% endif %}
-
-            {% endif%}
-          {% endif %}
-          {% if is_friend %}
-              <p class="text-center px-2 pt-3 sm:display-none ">Friends</p>
-            <button id="id_unfriend_btn" class="bg-blue-500 border-none px-2 py-1 
-            text-white font-semibold text-sm rounded block text-center  
-            sm:inline-block block" onclick="removeFriend('{{id}}', onFriendRemoved)">Unfriend</button>
-            <button id="message_btn" class="bg-blue-500 border-none px-2 py-1 ml-2 
-            text-white font-semibold text-sm rounded block text-center
-            sm:inline-block block" onclick="createOrReturnPrivateChat('{{id}}')">Send message</button>
-          {% endif %}
-
-
+<main class="profile-page layout layout--3 pt-5">
+    <div class="container">
+      <!-- Topics Start -->
+      <div class="topics">
+        <div class="topics__header">
+          <h2>Browse Topics</h2>
         </div>
-        <!-- post, following, followers list for medium screens -->
-        <ul class="hidden md:flex space-x-8 mb-4 list-decoration-none  list-unstyled gap-2">
-          <li >
-            <span>136</span>
-            posts
-          </li>
-
+        <ul class="topics__list">
           <li>
-            <span >{{friends|length}}</span>
-            friends
+            <a href="/" class="active">All <span>553</span></a>
           </li>
           <li>
-            <span >302</span>
-            following
+            <a href="/">Database <span>90</span></a>
           </li>
         </ul>
-        <!-- user meta form medium screens -->
-        <div class="hidden md:block">
-          <h1 class="font-semibold">Mr {{username}}...</h1>
-          <span>Travel, Nature and Music</span>
-          <p>Lorem ipsum dolor sit amet consectetur</p>
-        </div>
-
+        <button class="btn btn--link" href="/">
+          More
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+            <title>chevron-down</title>
+            <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
+          </svg>
+        </button>
       </div>
+      <!-- Topics End -->
 
-      <!-- user meta form small screens -->
-      <div class="md:hidden text-sm my-2">
-        <h1 class="font-semibold">Mr Travlerrr...</h1>
-        <span>Travel, Nature and Music</span>
-        <p>Lorem ipsum dolor sit amet consectetur</p>
-      </div>
-
-    </header>
-      <div class="">
-        <div class="card-body pt-3">
-          <!-- Bordered Tabs -->
-          <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
-
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="false" role="tab" tabindex="-1">Friends</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings" aria-selected="false" role="tab" tabindex="-1">Settings</button>
-            </li>
-            {% if is_self %}
-            <li class="nav-item" role="presentation">
-              <button class="nav-link " data-bs-toggle="tab" data-bs-target="#profile-change-password" aria-selected="true" role="tab">Change Password</button>
-            </li>
-            {% endif%}
-
-          </ul>
-          <div class="tab-content pt-2">
-
-            <div class="tab-pane fade profile-overview active show" id="profile-overview" role="tabpanel">
-              
-              <h5 class="card-title">Friends request </h5>
-                <p>you have {{friend_requests|length}} friend request</p>
-                {% for friend in friend_requests %}
-                  <div class="d-flex flex-row gap-2">
-                    <img src="{{friend.sender.profile_image.url}}" class="rounded-circle w-20 h-20 md:w-30 md:h-30" >
-                    <div class="d-flex flex-column">
-                      <h4>{{friend.sender.username}}</h4>
-                      <div>
-                        <button id="id_cancel_{{friend.sender.id}}" class=" btn btn-danger mx-2" onclick='triggerDeclineFriendRequest("{{request.id}}")'>decline</button>
-	  			              <button id="id_confirm_{{friend.sender.id}}" class=" btn btn-primary" onclick='triggerAcceptFriendRequest("{{request.id}}")'>accept</button>
-                      </div>
-                  </div> 
-                {% endfor %}
-                  <!-- <div class="d-flex flex-row gap-2 justify-content-center align-items-center">
-                  <img src="{{profile_image}}" class="rounded-circle" width="100px" height="100px">
-                  <div class="d-flex flex-column">
-                    <h4>David victor</h4>
-                    <h4>Friend </h4>
-                  <button class="btn btn-primary btn-block">Add Friend</button>
-                  </div>
-                </div>  -->
-
+      <!-- Room List Start -->
+      <div class="roomList">
+        <div class="profile">
+            <div class="profile__avatar">
+                <div class="avatar avatar--large {% if user.is_active  %} active {% endif %}">
+                  <img src="{{profile_image}}" />
+                </div>
             </div>
-              <div class="tab-pane fade pt-3 " id="profile-change-password" role="tabpanel">
-                <form method="post" action="{% url 'password_change' %}">
-                  {% csrf_token %}
-                  <div class="row mb-3">
-                    <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
-                    <div class="col-md-8 col-lg-9">
-                      <input name="password" type="password" class="form-control" id="currentPassword">
+            <div class="profile__info">
+                {% if is_self%}
+                  <h3> {{email}}</h3>
+                {% else%}
+                  {% if hide_email%}
+                    <h3>*********</h3>
+                  {%else%}
+                    <h3>{{email}}</h3>
+                  {% endif %}
+                  {% endif %}
+                <p>@{{username}}</p>
+                {% if request.user.is_authenticated %}
+                  {% if request_sent == 0 %}
+                  <div class="d-flex flex-row align-items-center">
+                    <span id="id_cancel_{{id}}" class="btn btn--main btn--pill" onclick='triggerDeclineFriendRequest("{{pending_friend_request_id}}")'>Decline</span>
+                    <span id="id_confirm_{{id}}" class="btn btn--main btn--pill" onclick='triggerAcceptFriendRequest("{{pending_friend_request_id}}")'>Accept</span>
+                  </div>
+                {% endif %}
+                    {% if is_friend == False and is_self == False %}
+                              <!-- You sent them a request -->
+                    {% if request_sent == 1 %}
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <button class="btn btn-danger" id="id_cancel_friend_request_btn">
+                            Cancel Friend Request
+                        </button>
                     </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
-                    <div class="col-md-8 col-lg-9">
-                      <input name="newpassword" type="password" class="form-control" id="newPassword">
+                    {% endif %}
+                    <!-- No requests have been sent -->
+                    {% if request_sent == -1 %}
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <button class="btn btn--main btn--pill" id="id_send_friend_request_btn">
+                            Send Friend Request
+                        </button>
                     </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
-                    <div class="col-md-8 col-lg-9">
-                      <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                    {% endif %}
+                      {% endif %}
+                    {% endif %}
+                    {% if is_friend %}
+                    <div class="dropdown pt-4 m-auto">
+                      <button class="btn btn-secondary dropdown-toggle friends-btn" data-bs-toggle="dropdown" aria-expanded="false" type="button" id="id_friends_toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Friends
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="id_friends_toggle">
+                        <a class="btn btn-secondary dropdown-item" href="#" onclick="removeFriend('{{id}}', onFriendRemoved)">Unfriend</a>
+                      </div>
                     </div>
-                  </div>
-
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Change Password</button>
-                  </div>
-                </form><!-- End Change Password Form -->
-
-              </div>
-          </div><!-- End Bordered Tabs -->
-
+                    {% endif %}
+                    {% if is_self %}
+                        <a href="{% url  "account:edit" user_id=request.user.id %}" class="btn btn--main btn--pill">Edit Profile</a>
+                    {% endif %}
+                    {% if is_friend %}
+                        <div class="pt-1 btn btn--main btn--pill" onclick="createOrReturnPrivateChat('{{id}}')">
+                            <span class="">Message</span>
+                        </div>
+                    {% endif %}
+            </div>
+            <div class="profile__about">
+                <h3>About</h3>
+                <p>
+                  {{bio}}
+                </p>
+            </div>
         </div>
-      </div>
 
+        <div class="roomList__header">
+            <div>
+              <h2>Study Rooms Hosted by {{username}}</a>
+              </h2>
+            </div>
+        </div>
+        {% if rooms %}
+            {% for room in rooms %}
+            <div class="roomListRoom">
+                <div class="roomListRoom__header">
+                    <a href="profile.html" class="roomListRoom__author">
+                      <div class="avatar avatar--small {% if room.host.is_active %} active {% endif %}">
+                        <img src="{{room.host.profile_image.url}}" />
+                      </div>
+                      <span>@{{room.host}}</span>
+                    </a>
+                    <div class="roomListRoom__actions">
+                      <span>{{room.created|timesince}}</span>
+          
+                    </div>
+                </div>
+            <div class="roomListRoom__content">
+                <a href="room.html">{{room.topic}}</a>
+                <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur ducimus harum
+                dolorem, obcaecati mollitia omnis quasi aut consequuntur enim itaque labore.
+                </p>
+            </div>
+            <div class="roomListRoom__meta">
+                <a class="roomListRoom__joined">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                    <title>user-group</title>
+                    <path
+                    d="M30.539 20.766c-2.69-1.547-5.75-2.427-8.92-2.662 0.649 0.291 1.303 0.575 1.918 0.928 0.715 0.412 1.288 1.005 1.71 1.694 1.507 0.419 2.956 1.003 4.298 1.774 0.281 0.162 0.456 0.487 0.456 0.85v4.65h-4v2h5c0.553 0 1-0.447 1-1v-5.65c0-1.077-0.56-2.067-1.461-2.584z">
+                    </path>
+                    <path
+                    d="M22.539 20.766c-6.295-3.619-14.783-3.619-21.078 0-0.901 0.519-1.461 1.508-1.461 2.584v5.65c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-5.651c0-1.075-0.56-2.064-1.461-2.583zM22 28h-20v-4.65c0-0.362 0.175-0.688 0.457-0.85 5.691-3.271 13.394-3.271 19.086 0 0.282 0.162 0.457 0.487 0.457 0.849v4.651z">
+                    </path>
+                    <path
+                    d="M19.502 4.047c0.166-0.017 0.33-0.047 0.498-0.047 2.757 0 5 2.243 5 5s-2.243 5-5 5c-0.168 0-0.332-0.030-0.498-0.047-0.424 0.641-0.944 1.204-1.513 1.716 0.651 0.201 1.323 0.331 2.011 0.331 3.859 0 7-3.141 7-7s-3.141-7-7-7c-0.688 0-1.36 0.131-2.011 0.331 0.57 0.512 1.089 1.075 1.513 1.716z">
+                    </path>
+                    <path
+                    d="M12 16c3.859 0 7-3.141 7-7s-3.141-7-7-7c-3.859 0-7 3.141-7 7s3.141 7 7 7zM12 4c2.757 0 5 2.243 5 5s-2.243 5-5 5-5-2.243-5-5c0-2.757 2.243-5 5-5z">
+                    </path>
+                </svg>
+                5.3k Joined
+                </a>
+                <p class="roomListRoom__topic">{{room.tittle}}</p>
+            </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+      </div>
+      <!-- Room List End -->
+
+      <!-- Activities Start -->
+      <div class="activities">
+        <div class="activities__header">
+          <h2>Friends</h2>
+        </div>
+		{% if friends %}
+		{% for friend in friends %}
+			<div class="activities__box">
+				<div class="activities__boxHeader roomListRoom__header">
+					<a href="profile.html" class="roomListRoom__author">
+					<div class="avatar avatar--small">
+						<img src="{{friend.profile_image.url}}" />
+					</div>
+					<p>
+						@{{friend.username}}
+						<span> last seen {{friend.last_login| timesince}}</span>
+					</p>
+					</a>
+				</div>
+				<div class="activities__boxContent">
+					<button class="btn btn--main btn--pill" onclick="createOrReturnPrivateChat('{{friend.id}}')" >Message</button>
+					<a class="btn btn--main btn--pill" href="{% url 'account:view' user_id=friend.id  %}">view</a>
+
+				</div>
+				
+			</div>
+		{% endfor %}
+		{% endif %}
+      <!-- Activities End -->
     </div>
-  </div>
-</main>
+  </main>
 <script type="text/javascript">
 
 	// called from base_js.html

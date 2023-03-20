@@ -15,7 +15,7 @@ def find_or_create_private_chat(user1, user2):
             chat.save()
     return chat
 
-def caculate_timestamp(timestamp):
+def calculate_timestamp(timestamp):
     
 	if ((naturalday(timestamp) == "today")  or (naturalday(timestamp) == "yesterday")):
 		
@@ -40,7 +40,8 @@ class LazyRoomChatMessageEncoder(Serializer):
         dump_object.update({"username": str(obj.user.username)})
         dump_object.update({"message": str(obj.content)})
         dump_object.update({"profile_image": str(obj.user.profile_image.url)})
-        dump_object.update({"natural_timestamp": str(caculate_timestamp(obj.timestamp))})
+        dump_object.update({"natural_timestamp": str(calculate_timestamp(obj.timestamp))})
         
         return dump_object
+
 

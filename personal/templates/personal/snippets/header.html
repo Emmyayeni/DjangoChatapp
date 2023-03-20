@@ -1,15 +1,76 @@
-  {% load static %}
-  <!-- ======= Header ======= -->  
-  <header id="header" class="header fixed-top d-flex align-items-center">
+d  {% load static %}
+  <!-- ======= Header ======= --> 
+  <style type="text/css">
+    .chat-dropdown-header:hover{
+      cursor: pointer;
+      background: var(--main-background-color);
+      color:black;
+    }
+    .chat-dropdown-header{
+      color: var(--light-primary-text-color);
+    }
 
+    @media screen and (max-width: 400px) {
+      .logo span{
+        font-size: 20px;
+      }
+    }
+    .scrollable-menu {
+      height: auto;
+      max-height: 90vh;
+      width: 500px;
+      overflow-x: hidden;
+    }
+    .dropdown-item {
+      -bs-dropdown-link-color: white;
+      color: white;
+    }
+    .notifications-material-icon {
+      font-size: 28px;
+  
+    }
+    .notifications-icon-container{
+      width: 40px;
+      height: 40px;
+      background-color: var(--main-background-color);
+    }
+    .notify-badge{
+      position: absolute;
+      background: transparent;
+      height:1.2rem;
+      width:1.2rem;
+      line-height: 1.2rem;
+      top:1rem;
+      right:2rem;
+      text-align: center;
+      font-size: 1rem;
+      border-radius: 50%;
+      color:white;
+      font-weight: 630;
+      margin-top:-15px;
+      margin-right: -25px;
+    }
+    #id_notifications_spinner{
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .bg-purple{
+      background:  #3f4156;
+      font-size: 13px;
+      color:white;
+    }
+    .header-nav .nav-icon{
+      color: white;
+    }
+  </style>
+  <header id="header" class="header fixed-top d-flex align-items-center text-white">
     <div class="d-flex align-items-center justify-content-between">
       <a href="/" class="logo d-flex align-items-center">
-        <img src="{% static  "assets/img/logo.png" %}"/>
-        <span class="d-none d-lg-block">Spec Chat</span>
+        <span class=" d-lg-block " style="color:#5995fd;">Spec Chat</span>
       </a>
     </div><!-- End Logo -->
 
-    <div class="search-bar">
+    <div class="search-bar bg-transparent">
       <form class="search-form d-flex align-items-center" action={% url 'account_search_results'%}>
         <input type="text" name="q" placeholder="Search" title="Enter search keyword">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
@@ -27,148 +88,36 @@
 
         <li class="nav-item dropdown">
 
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+          <a class="nav-link nav-icon border-none border-transparent" href="#" data-bs-toggle="dropdown" onClick="setGeneralNotificationsAsRead()">
             <i class="bi bi-bell"></i>
-            <span class="badge bg-primary badge-number">4</span>
+            <span class="badge bg-danger badge-number" id='id_general_notifications_count'></span>
           </a><!-- End Notification Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-            <li class="dropdown-header">
-              You have 4 new notifications
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+          <div class=" bg-purple dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications scrollable-menu" id="id_general_notifications_container">
 
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
+          </div><!-- End Notification Dropdown Items -->
 
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-x-circle text-danger"></i>
-              <div>
-                <h4>Atque rerum nesciunt</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Sit rerum fuga</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Dicta reprehenderit</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
-
-          </ul><!-- End Notification Dropdown Items -->
-
-        </li><!-- End Notification Nav -->
+        </li>
 
         <li class="nav-item dropdown">
 
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
+            <span class="badge bg-danger badge-number" id="id_chat_notifications_count"></span>
           </a><!-- End Messages Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="{% url 'chat:private-chat-room' %}"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static "assets/img/messages-1.jpg"%}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static "assets/img/messages-2.jpg"%}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static "assets/img/messages-3.jpg" %}" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="dropdown-footer">  
-              <a href="{% url 'chat:private-chat-room'%}">Show all messages</a>
-            </li>
-
-          </ul><!-- End Messages Dropdown Items -->
-
+          
+          <div class="bg-purple dropdown dropdown-menu dropdown-menu-end scrollable-menu  dropdown-menu-arrow messages" id="id_chat_notifications_container">
+            <div class="chat-dropdown-header d-flex flex-row justify-content-center m-auto align-items-end" id ="chat-dropdown-header">
+              <span> available chats </span>
+            </div>
+          </div>
+          
+           <!-- End Messages Dropdown Items -->
         </li>
         <li class"nav-items">
           <a href="{% url 'friend:friend_requests' user_id=request.user.id %}" class="nav-link nav-icon" >
             <i class="bx bxs-group"></i>
-            <span class="badge bg-danger badge-number">4</span>
+            <span class="badge bg-danger badge-number"></span>
           </a>
         </li>
         <!-- End Messages Nav -->
@@ -177,13 +126,12 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="{{request.user.profile_image.url}}" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">{{request.user.username}}</span>
+            <span class="d-none d-md-block dropdown-toggle ps-2 text-white">{{request.user.username}}</span>
           </a><!-- End Profile Iamge Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <ul class="bg-purple text-white dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>{{request.user.username}}</h6>
-              <span>Web Designer</span>
+              <h6 class="text-white">{{request.user.username}}</h6>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -232,6 +180,99 @@
 
       </ul>
     </nav><!-- End Icons Navigation -->
-
   </header><!-- End Header -->
+  {% include 'personal/snippets/general_notifications.html' %}
+  {% include 'personal/snippets/chat_notificcations.html' %}
+
+<!-- Setup SOCKET for NOTIFICATIONS -->
+<script type="text/javascript">
+	// Correctly decide between ws:// and wss://
+	var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+	// var ws_path = ws_scheme + '://' + window.location.host + ":8001/"; // PRODUCTION
+	var ws_path = ws_scheme + '://' + window.location.host + "/";
+	// console.log("Connecting to " + ws_path);
+	var notificationSocket = new WebSocket(ws_path);
+
+	// Handle incoming messages
+	notificationSocket.onmessage = function(message) {
+		var data = JSON.parse(message.data);
+		console.log("Got notification websocket message. " + data.general_msg_type);
+		console.log("Got notification websocket message. " + data.chat_msg_type);
+
+		/*
+			GENERAL NOTIFICATIONS
+		*/
+		// new 'general' notifications data payload
+		if(data.general_msg_type == 0){
+			handleGeneralNotificationsData(data['notifications'], data['new_page_number'])
+		}
+
+		// "General" Pagination exhausted. No more results.
+		if(data.general_msg_type == 1){
+			setGeneralPaginationExhausted()
+		}
+
+		// Refresh [newest_timestamp >= NOTIFICATIONS >= oldest_timestamp]
+		if(data.general_msg_type == 2){
+			refreshGeneralNotificationsData(data['notifications'])
+		}
+
+		if(data.general_msg_type == 3){
+			handleNewGeneralNotificationsData(data['notifications'])
+		}
+
+		if(data.general_msg_type == 4){
+			setUnreadGeneralNotificationsCount(data['count'])
+		}
+
+		if(data.general_msg_type == 5){
+			updateGeneralNotificationDiv(data['notification'])
+		}
+
+		/*
+			CHAT NOTIFICATIONS
+		*/
+		// new 'chat' notifications data payload
+		if(data.chat_msg_type == 10){
+			handleChatNotificationsData(data['notifications'], data['new_page_number'])
+		}
+		// "Chat" Pagination exhausted. No more results.
+		if(data.chat_msg_type == 11){
+			setChatPaginationExhausted()
+		}
+		// refreshed chat notifications
+		if(data.chat_msg_type == 13){
+			handleNewChatNotificationsData(data['notifications'])
+		}
+		if(data.chat_msg_type == 14){
+			setChatNotificationsCount(data['count'])
+		}
+	}
+
+	notificationSocket.onclose = function(e) {
+		console.error('Notification Socket closed unexpectedly');
+	};
+
+	notificationSocket.onopen = function(e){
+		console.log("Notification Socket on open: " + e)
+		setupGeneralNotificationsMenu()
+		getFirstGeneralNotificationsPage()
+		getUnreadGeneralNotificationsCount()
+
+		setupChatNotificationsMenu()
+		getFirstChatNotificationsPage()
+	}
+
+	notificationSocket.onerror = function(e){
+		console.log('Notification Socket error', e)
+	}
+
+	if (notificationSocket.readyState == WebSocket.OPEN) {
+		console.log("Notification Socket OPEN complete.")
+	} 
+	else if (notificationSocket.readyState == WebSocket.CONNECTING){
+		console.log("Notification Socket connecting..")
+	}
+</script>
+
 

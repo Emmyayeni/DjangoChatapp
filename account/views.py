@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate,logout
 from account.forms import RegistrationForm,AccountAuthenticationForm,AccountUpdateForm
 # Create your views here.
+from django.contrib import messages
 from friend.models import *
 from django.conf import settings
 from account.models import *
@@ -15,67 +16,54 @@ import base64
 from django.core import files
 from friend.util import get_friend_request_or_false
 from friend.friend_request_status import *
-
+from Publicchat.models import PublicChatRoom
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
-def register_view(request,*args,**kwargs):
-    user = request.user 
-    if user.is_authenticated:
-        return HttpResponse(f"You are already authenticated as {user.email}.")
-    context = {}
-    if request.POST:
+def register_view(request):
+    form = RegistrationForm()
+
+    if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
             email = form.cleaned_data.get('email').lower()
-            username= form.cleaned_data.get('username')
-            raw_password= form.cleaned_data.get('password1')
-            account = authenticate(email=email,password=raw_password)
-            login(request,account)
-            destination = kwargs.get("next")
-            if destination:
-                return redirect(destination)
-            return redirect("home")
+            raw_password = form.cleaned_data.get('password1')
+            account = authenticate(email=email, password=raw_password)
+            login(request, account)
+            return redirect('home')
         else:
-            
-            context['registration_form'] = form
+            messages.error(request, 'An error occurred during registration')
 
-    return render(request,'account/register.html',context)
-    
+    return render(request, 'account/login.html', {'form': form})
 
-def Login(request,*args,**kwargs):
-    context = {}
-    user = request.user
-    if user.is_authenticated:
-        return redirect("home")
-    destination = get_redirect_if_exists(request)
-    if request.POST:
-        form = AccountAuthenticationForm(request.POST)
-        if form.is_valid():
-            email = request.POST['email']
-            password = request.POST['password']
-            user = authenticate(email=email,password=password)
-            if user:
-                login(request,user)
-                destination = get_redirect_if_exists(request)
-                if destination:
-                    return redirect(destination)
-                return redirect("home")
+
+def Login(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()
+        password = request.POST.get('password')
+
+        try:
+            user = Account.objects.get(email=email)
+        except:
+            messages.error(request, 'User does not exist')
+
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
         else:
-            context['login_form'] = form
+            messages.error(request, 'Username OR password does not exit')
+    return render(request, 'account/login.html')
 
-    return render(request,"account/login.html",context)
 
-def get_redirect_if_exists(request):
-    redirect = None
-    if request.GET:
-        if request.GET.get("next"):
-            redirect(request.GET.get("next"))
-        return redirect
 
 def logout_view(request):
     logout(request)
     return redirect("login")
+
 
 def account_view(request,*args,**kwargs):
     """
@@ -99,7 +87,8 @@ def account_view(request,*args,**kwargs):
         context['email'] = account.email
         context['profile_image'] = account.profile_image.url
         context['hide_email'] = account.hide_email
-        
+        room_host_by_user = PublicChatRoom.objects.filter(host=account)
+        context['rooms'] = room_host_by_user
         try:
             friend_list = FriendList.objects.get(user=account)
         except FriendList.DoesNotExist:
@@ -107,7 +96,7 @@ def account_view(request,*args,**kwargs):
             friend_list.save() 
         friends = friend_list.friends.all()
         context['friends'] = friends
-
+        context['bio']=account.bio
         # define stae variables
         is_self = True
         request_sent = FriendRequestStatus.NO_REQUEST_SENT.value # range: ENUM -> friend/friend_request_status.FriendRequestStatus
@@ -148,23 +137,26 @@ def account_view(request,*args,**kwargs):
 
 def account_search_results(request,*args,**kwargs):
     context = {}
-    if request.method == 'GET':
-        search_params = request.GET.get('q')
-        if len(search_params) > 0:
-            search_result = Account.objects.filter(email__icontains=search_params,
-                                                  username__icontains=search_params                                    
-            ).distinct()
-        user = request.user
-        accounts = []
-        for account in search_result:
-            accounts.append((account,False))
-        context['accounts'] = accounts
+    if request.method == "GET":
+        search_query = request.GET.get("q")
+        if len(search_query) > 0:
+            search_results = Account.objects.filter(email__icontains=search_query).filter(username__icontains=search_query).distinct()
+            user = request.user
+            accounts = [] # [(account1, True), (account2, False), ...]
+            if user.is_authenticated:
+    			# get the authenticated users friend list
+                auth_user_friend_list = FriendList.objects.get(user=user)
+                for account in search_results:
+                    accounts.append((account, auth_user_friend_list.is_mutual_friend(account)))
+                context['accounts'] = accounts
+            else:
+                for account in search_results:
+                    accounts.append((account, False))
+                context['accounts'] = accounts
     
-
     return render(request,'account/search_results.html',context)
 
     user = request.user
-
 def edit_account(request,*args,**kwargs):
     if not request.user.is_authenticated:
        return redirect("login")
@@ -190,7 +182,8 @@ def edit_account(request,*args,**kwargs):
                     "email":account.email,
                     "username": account.username,
                     "profile_image": account.profile_image,
-                    "hide_email": account.hide_email
+                    "hide_email": account.hide_email,
+                    "bio":account.bio
                   }
             )
             context['form'] = form
@@ -201,7 +194,8 @@ def edit_account(request,*args,**kwargs):
                     "email":account.email,
                     "username": account.username,
                     "profile_image": account.profile_image,
-                    "hide_email": account.hide_email
+                    "hide_email": account.hide_email,
+                    "bio":account.bio
                   }
             )
             context['form'] = form 
@@ -271,6 +265,3 @@ def crop_image(request, *args, **kwargs):
             payload['result'] = "error"
             payload['exception'] = f"{e}"
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
-def test(request):
-    return render(request,'account/test.html',)

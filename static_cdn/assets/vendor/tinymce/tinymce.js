@@ -2080,7 +2080,7 @@
             if (sibling) {
               return sibling;
             }
-            for (let parent = node.parentNode; parent && parent !== this.rootNode; parent = parent.parentNode) {
+            for (let parent = node.pare; parent && parent !== this.rootNode; parent = parent.parentNode) {
               sibling = parent[siblingName];
               if (sibling) {
                 return sibling;

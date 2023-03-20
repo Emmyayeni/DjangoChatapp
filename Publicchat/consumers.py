@@ -4,7 +4,7 @@ from django.core.serializers import serialize
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import json
 from chat.exception import ClientError
-from chat.utils import caculate_timestamp
+from chat.utils import calculate_timestamp
 from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 from django.contrib.humanize.templatetags.humanize import naturalday,naturaltime
@@ -14,6 +14,7 @@ from Publicchat.models import PublicChatRoom,PublicRoomChatMessage
 from Publicchat.constant import DEFAULT_ROOM_CHAT_MESSAGE_PAGE_SIZE, MSG_TYPE_MESSAGE, MSG_TYPE_CONNECTED_USER_COUNT
 User = get_user_model()
 from asgiref.sync import sync_to_async
+
 class PublicChatConsumer(AsyncJsonWebsocketConsumer):
     	
 	async def connect(self):
@@ -22,7 +23,7 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 		"""
 		print(f"PublicChatConsumer: connect {self.scope['user']}")
 			
-		await  self.accept()
+		await self.accept()
 
 
 		self.room_id = None
@@ -55,6 +56,7 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 			elif command == "join":
 				# Make them join the room
 				await self.join_room(content["room"])
+				await add_participant(content['room'],self.scope['user'])
 			elif command == "leave":
 				# Leave the room
 				await self.leave_room(content["room"])
@@ -119,7 +121,7 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 		"""
 		# send a messagae down to the client
 		print(f"PublicChatConsumer: chat_message from user #: {event['user_id']}")
-		timestamp = caculate_timestamp(timezone.now())
+		timestamp = calculate_timestamp(timezone.now())
 		await self.send_json({
 			"msg_type":MSG_TYPE_MESSAGE, 
 			"profile_image":event['profile_image'],
@@ -139,10 +141,9 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 			room = await get_room_or_error(room_id)
 		except ClientError as e:
 			await self.handle_client_error(e)
-
 		# Add user to "users" list for room
-		if is_auth:
-			await connect_user(room, self.scope["user"])
+		# if is_auth:
+		# await connect_user(room, self.scope["user"])
 
 		# Store that we're in the room
 		self.room_id = room.id
@@ -179,9 +180,9 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 		except ClientError as e:
 			await self.handle_client_error(e)
 		# Remove user from "user list"
-		if is_auth:
-			await disconnect_user(room,self.scope['user'])
-		# Remove that we're in the room
+		# if is_auth:
+		# 	await disconnect_user(room,self.scope['user'])
+		# # Remove that we're in the room
 		self.room_id = None
 
 		# send the new user count to the room
@@ -251,13 +252,13 @@ def get_num_connected_users(room):
 def create_public_room_chat_message(room, user, message):
     	return PublicRoomChatMessage.objects.create(user=user,room=room,content=message)
 
-@database_sync_to_async
-def connect_user(room,user):
-    return room.connect_user(user)
+# @database_sync_to_async
+# def connect_user(room,user):
+#     return room.connect_user(user)
 
-@database_sync_to_async
-def disconnect_user(room,user):
-    	return room.disconnect_user(user)
+# @database_sync_to_async
+# def disconnect_user(room,user):
+#     	return room.disconnect_user(user)
 
 @database_sync_to_async 
 def get_room_or_error(room_id):
@@ -272,7 +273,15 @@ def get_room_or_error(room_id):
 
 
 
- 
+@database_sync_to_async
+def add_participant(room_id,user):
+    try:   
+        room = PublicChatRoom.objects.get(pk=room_id)
+        PublicChatRoom.add_user(room,user)
+    except PublicChatRoom.DoesNotExist:
+       print('room does not exist')
+
+
 @database_sync_to_async
 def get_room_chat_message(room, page_number):
 	try:
@@ -302,6 +311,6 @@ class LazyRoomChatMessageEncoder(Serializer):
 		dump_object.update({'username': str(obj.user.username)})
 		dump_object.update({'message': str(obj.content)})
 		dump_object.update({'profile_image': str(obj.user.profile_image.url)})
-		dump_object.update({'natural_timestamp':caculate_timestamp(obj.timestamp)}) 
+		dump_object.update({'natural_timestamp':calculate_timestamp(obj.timestamp)}) 
 
 		return dump_object  

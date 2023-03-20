@@ -5,78 +5,229 @@
 
 
 <style type="text/css">
-	.profile-image{
-		max-height: 100px;
-		max-width: 100px;
+	.friend-list {
+	  font-family: "Montserrat", sans-serif;
 	}
-	.profile-image{
-		border-radius: 12px;
+	.friend-list .friend-box {
+	  position: relative;
+	  display: inline-block;
+	  width: 170px;
+	  height: 140px;
+	  background-color: #3f4156;
+	  margin: 20px;
+	  border-radius: 10px;
 	}
-	.card{
-		border-radius: 12px;
+	.friend-list .friend-profile {
+	  position: absolute;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  top: -20px;
+	  border-radius: 50%;
+	  height: 70px;
+	  width: 70px;
+	  background-size: cover;
+	  background-position: center;
+	  border: 3px rgba(255, 255, 255, 0.7) solid;
+	  box-shadow: 0px 0px 15px #aaa;
 	}
-	.dropdown-toggle::after { 
-		content: none; 
+	.friend-list .name-box {
+	  text-align: center;
+	  position: absolute;
+	  top: 55px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: 100%;
+	  color: #4F7091;
+	  font-size: 18px;
 	}
-	.profile-link{
-		color: #000;
+	.friend-list .user-name-box {
+	  position: absolute;
+	  top: 80px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  width: 100%;
+	  text-align: center;
+	  font-size: 12px;
 	}
-	.material-icons{
-		font-size: 30px;
+	.friend-list .level-indicator {
+	  background-color: #00a5db;
+	  color: #fff;
+	  display: inline-block;
+	  padding: 5px 10px;
+	  border-radius: 10px;
+	  position: absolute;
+	  bottom: 10px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  font-size: 12px;
 	}
-	.material-icons:hover{
-		cursor: pointer;
+	
+	.friend-requests {
+	  font-family: "Montserrat", sans-serif;
+	  text-align: center;
 	}
-	.confirm-friend-request{
-		color: green;
+	.friend-requests .friend-box {
+	  position: relative;
+	  display: inline-block;
+	  width: 300px;
+	  height: 140px;
+	  background-color: #3f4156;
+	  margin: 20px;
+	  border-radius: 10px;
 	}
-	.confirm-friend-request:hover {
-		opacity: 0.3;
+	.friend-requests .friend-profile {
+	  position: absolute;
+	  left: 10px;
+	  top: 10px;
+	  border-radius: 50%;
+	  height: 70px;
+	  width: 70px;
+	  background-size: cover;
+	  background-position: center;
+	  border: 3px rgba(255, 255, 255, 0.7) solid;
+	  box-shadow: 0px 0px 15px #aaa;
 	}
-	.decline-friend-request:hover {
-		opacity: 0.3;
+	.friend-requests .name-box {
+	  text-align: left;
+	  position: absolute;
+	  top: 20px;
+	  left: 90px;
+	  width: 200px;
+	  color: #4F7091;
+	  font-size: 18px;
 	}
-	.decline-friend-request{
-		color: red;
+	.friend-requests .user-name-box {
+	  position: absolute;
+	  top: 50px;
+	  left: 90px;
+	  width: 200px;
+	  text-align: left;
+	  font-size: 12px;
+	  line-height: 16px;
 	}
-</style>
+	.friend-requests .request-btn-row {
+	  position: absolute;
+	  left: 10px;
+	  width: calc(100% - 20px);
+	  bottom: 10px;
+	  text-align: center;
+	}
+	.friend-requests .request-btn-row .friend-request {
+	  width: 35%;
+	  margin: 5px 5%;
+	  border-radius: 5px;
+	  border: 2px solid transparent;
+	  padding: 5px;
+	  cursor: pointer;
+	}
+	.friend-requests .request-btn-row .decline-request {
+	  background-color: #FF6666;
+	  color: #fff;
+	}
+	.friend-requests .request-btn-row .decline-request:hover {
+	  background-color: #993333;
+	}
+	.friend-requests .request-btn-row .accept-request {
+	  background-color:  #5995fd;
+	  color: #fff;
+	}
+	.friend-requests .request-btn-row .accept-request:hover {
+	  background-color: #419764;
+	}
+	.friend-requests .request-btn-row .fr-request-pending {
+	  position: relative;
+	  top: -10px;
+	  color: #17406f;
+	  font-weight: bold;
+	}
+	.friend-requests .request-btn-row.disappear {
+	  display: none;
+	}
 
+.btn--pill2 {
+    border-radius: 10rem;
+    font-weight: 700;
+    padding: 6px 2.5rem;
+    color: #fd5961;
+    background: transparent;
+    border: 2px solid #fd5961;
+}
+
+.activities__box1 {
+    height: 114px;
+    width: 315px;
+    margin: 1.5rem;
+    padding: 1.5rem;
+    border: 2px solid var(--color-dark-medium);
+    border-radius: 5px;
+}
+	</style>
+	
 <div class="container mt-5">
-	<div class="card p-2 mt-3">
-
+	<h2 class="pt-4">Friends</h2>
+	<div class="mobile-menuItems ">
+		<a class="btn btn--main btn--pill" href="#">Suggestion</a>
+		<a class="btn btn--main btn--pill" href="#">Your friends</a>
+	  </div>
+	<div class=" p-2 mt-3">
 		{% if friend_requests %}
-		<div class="d-flex flex-row flex-wrap">
-		{% for request in friend_requests %}
-		<div class="card flex-row flex-grow-1 p-2 mx-2 my-2 align-items-center">
-			<a class="profile-link" href="{% url 'account:view' user_id=request.sender.id %}">
-				<div class="card-image m-2">
-					<img class="img-fluid profile-image" src="{{request.sender.profile_image.url}}" alt="">
+		<div class="friend-requests pt-5">
+			{% for request in friend_requests %}
+				<div class="friend-box" href='{% url 'account:view' user_id=request.sender.id %}'>
+					<img src="{{request.sender.profile_image.url}}" class="friend-profile">
+					<div class="name-box">
+						<h4 class="card-title">{{request.sender.username}}</h4>
+					</div>
+					<div class="user-name-box">
+								Friends
+					</div>
+					<div class="request-btn-row">
+							<button class="friend-request accept-request" id="id_cancel_{{request.sender.id}}" onclick='triggerDeclineFriendRequest("{{request.id}}")'>Decline</button>
+							<button class="friend-request decline-request" id="id_confirm_{{request.sender.id}}" onclick='triggerAcceptFriendRequest("{{request.id}}")'>Accept</button>		
+					</div>
 				</div>
-			</a>
-			<a class="profile-link" href="{% url 'account:view' user_id=request.sender.id %}">
-				<div class="card-center px-2">
-					<h4 class="card-title">{{request.sender.username}}</h4>
-				</div>
-			</a>
-			<div class="d-flex flex-row card-right flex-grow-1 justify-content-end mx-2">
-	  			<button id="id_cancel_{{request.sender.id}}" class=" btn btn-danger mx-2" onclick='triggerDeclineFriendRequest("{{request.id}}")'>decline</button>
-	  			<button id="id_confirm_{{request.sender.id}}" class=" btn btn-primary" onclick='triggerAcceptFriendRequest("{{request.id}}")'>accept</button>
-			</div>
-		</div>
+			{% endfor %}
+	</div>
 		{% if forloop.counter|divisibleby:2 %}
 		</div><div class="d-flex flex-row flex-wrap">
 		{% endif %}
 		
-		{% endfor %}
 		
 		{% else %} <!-- If no friends -->
-		<div class="d-flex flex-row flex-grow-1 justify-content-center align-items-center p-4">
-			<p>No results</p>
-		</div>
+		 no available friend request
 		{% endif %}
 		</div>
 	</div>
+
+	<h2 class="p-3">Friends You may know<h2>
+		<body>
+			<!-- partial:index.partial.html -->
+			{% if other_users %}
+			<div class="friend-list">
+				{% for user in other_users %}
+				<div class="activities__box1">
+					<div class="activities__boxHeader roomListRoom__header">
+						<a href="profile.html" class="roomListRoom__author">
+						<div class="avatar avatar--small">
+							<img src="{{user.profile_image.url}}" />
+						</div>
+						<p>
+							@{{user.username}}
+							<span> last seen {{user.last_login| timesince}}</span>
+						</p>
+						</a>
+					</div>
+					<div class="activities__boxContent">
+						<button class="btn btn--main btn--pill"  >Add Friend</button>
+						<bu class="btn btn--main btn--pill2">Delete</button>
 	
+					</div>
+					
+				</div>
+				{% endfor %}
+			</div>
+			{% endif %}
+			</body>
 </div>
 <script type="text/javascript">
 	function onFriendRequestAccepted(){

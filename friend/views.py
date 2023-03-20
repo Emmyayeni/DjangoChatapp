@@ -14,10 +14,19 @@ def friend_requests(request,*args,**kwargs):
         account = Account.objects.get(pk=user_id)
         if account == user:
             friend_requests = FriendRequest.objects.filter(receiver=account,is_active=True)
+            accounts = Account.objects.all()
+            friend = FriendList.objects.get(user=account)
+            all_friend = friend.friends.all()
+            other_users = []
+            for user in accounts:
+                if user not in all_friend and user!=account:
+                    other_users.append(user)
             context['friend_requests'] = friend_requests
+            context['other_users'] = other_users
         else:
             return HttpResponse("You can't view another user friend request")
     redirect("login")
+
     return render(request, "friend/friend_requests.html",context)
 
 def send_friend_request(request,*args,**kwargs):
