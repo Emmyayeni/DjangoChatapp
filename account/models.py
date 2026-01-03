@@ -58,6 +58,9 @@ class Account(AbstractBaseUser):
     USERNAME_FIELD ="email"
     REQUIRED_FIELDS = ['username']
 
+    class Meta:
+        db_table = 'account_account'
+
     def __str__(self):
         return self.username
 

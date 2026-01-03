@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +31,7 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ALLOWED_HOSTS = ['192.168.0.101','localhost','127.0.0.1']
-AUTH_USER_MODEL = "account.Account"
+AUTH_USER_MODEL = "user_account.Account"
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.AllowAllUsersModelBackend',
@@ -44,11 +45,14 @@ INSTALLED_APPS = [
     'daphne',
     'channels',
     'personal',
-    'account',
+    'account.apps.AccountConfig',
     'friend',
     'Publicchat',
     'chat',
     'notification',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     # third party libray
     'django.contrib.admin',
     'django.contrib.auth',
@@ -57,6 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'Chatapp.urls'
@@ -112,15 +118,10 @@ DB_USER = "postgres"
 DB_PASSWORD = "ayeni12345"
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DB_NAME,
-        'USER':DB_USER,
-        'PASSWORD':DB_PASSWORD,
-        'HOST': 'localhost',
-        'PORT':'5432',
-
-    }
+    'default': dj_database_url.config(
+        default='postgresql://neondb_owner:npg_NL8RorUsaw5g@ep-odd-frost-adfqqf31-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
+        conn_max_age=600
+    )
 }
 
 
@@ -178,3 +179,4 @@ BASE_URL = "http://127.0.0.1:8000"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SITE_ID = 1
