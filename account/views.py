@@ -207,9 +207,9 @@ def save_temp_profile_image_from_base64String(imageString,user):
     try:
         if not os.path.exists(settings.TEMP):
             os.mkdir(settings.TEMP)
-        if not os.path.exists(f"{settings.TEMP}/{user.pk}"):
-            os.mkdir(f"{settings.TEMP}/{user.pk}")
-        url = os.path.join(f"{settings.TEMP}\{user.pk}",TEMP_PROFILE_IMAGE_NAME)
+        if not os.path.exists(os.path.join(settings.TEMP, str(user.pk))):
+            os.mkdir(os.path.join(settings.TEMP, str(user.pk)))
+        url = os.path.join(settings.TEMP, str(user.pk), TEMP_PROFILE_IMAGE_NAME)
         storage = FileSystemStorage(location=url)
         image = base64.b64decode(imageString)
         with storage.open('', 'wb+') as destination:
@@ -243,22 +243,26 @@ def crop_image(request, *args, **kwargs):
                 cropX = 0
             if cropY <= 0:
                 cropY = 0
-            crop_img = img[cropY:cropY+cropHeight, cropX:cropX+cropWidth]
+            
+            if img is not None:
+                crop_img = img[cropY:cropY+cropHeight, cropX:cropX+cropWidth]
+                cv2.imwrite(url, crop_img)
+                # delete the old image
+                user.profile_image.delete()
+                # Save the cropped image to user model
+                user.profile_image.save("profile_image.png", files.File(open(url, 'rb')))
+                user.save()
 
-            cv2.imwrite(url, crop_img)
-
-			# delete the old image
-            user.profile_image.delete()
-
-			# Save the cropped image to user model
-            user.profile_image.save("profile_image.png", files.File(open(url, 'rb')))
-            user.save()
-
-            payload['result'] = "success"
-            payload['cropped_profile_image'] = user.profile_image.url
-
-			# delete temp file
-            os.remove(url)
+                payload['result'] = "success"
+                payload['cropped_profile_image'] = user.profile_image.url
+                # delete temp file
+                os.remove(url)
+            else:
+                payload['result'] = "error"
+                payload['exception'] = "Failed to load image"
+                # delete temp file if it exists
+                if os.path.exists(url):
+                    os.remove(url)
 			
         except Exception as e:
             print(f"exception:{e}")
