@@ -1,4 +1,4 @@
-d  {% load static %}
+{% load static %}
   <!-- ======= Header ======= --> 
   <style type="text/css">
     .chat-dropdown-header:hover{
@@ -181,6 +181,35 @@ d  {% load static %}
       </ul>
     </nav><!-- End Icons Navigation -->
   </header><!-- End Header -->
+
+  <script>
+    // Header dropdown behavior:
+    // - Only one dropdown open at a time
+    // - Close dropdown when clicking a menu item
+    document.addEventListener('show.bs.dropdown', function (event) {
+      const openedDropdown = event.target;
+      document.querySelectorAll('.header-nav .dropdown.show').forEach(function (dropdown) {
+        if (dropdown !== openedDropdown) {
+          const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+          if (toggle && window.bootstrap) {
+            window.bootstrap.Dropdown.getOrCreateInstance(toggle).hide();
+          }
+        }
+      });
+    });
+
+    document.addEventListener('click', function (event) {
+      const clickedLink = event.target.closest('.header-nav .dropdown-menu a');
+      if (!clickedLink) return;
+
+      const dropdown = clickedLink.closest('.dropdown');
+      const toggle = dropdown ? dropdown.querySelector('[data-bs-toggle="dropdown"]') : null;
+      if (toggle && window.bootstrap) {
+        window.bootstrap.Dropdown.getOrCreateInstance(toggle).hide();
+      }
+    });
+  </script>
+
   {% include 'personal/snippets/general_notifications.html' %}
   {% include 'personal/snippets/chat_notificcations.html' %}
 

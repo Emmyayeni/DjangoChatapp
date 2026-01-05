@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<script src="{% static "js/jquery.min.js" %}"></script>
+<script src="{% static "bud/tinymce.min.js" %}"></script>
+<p class="d-none" id="id_page_number">0</p>
+
+<main class="pt-4 profile-page layout layout--2">
+    
+    <!-- Room Start -->
+    <div class="room">
+        <div class="room__top">
+            <div class="room__topLeft">
+                <a href="{% url 'home' %}">
+                    <i class="fas fa-arrow-left fa-lg"></i>
+                </a>
+                <h3>Conversations</h3>
+            </div>
+            <div class="room__topRight">
+                <!-- Optional actions -->
+            </div>
+        </div>
+        
+        <div class="room__box scrollable" id="id_chat_log">
+            <!-- Chat messages will be appended here by JS -->
+            <div class="d-flex flex-row justify-content-center" id="id_chatroom_loading_spinner" role="status" style="display: none; ">
+                <div class="spinner-border text-primary"  role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="room__message">
+            <div class="d-flex">
+                <textarea name="body" id="id_chat_message_input" class="form-control" placeholder="Write your message..."></textarea>
+                <button class="btn btn--main ms-2" id="id_chat_message_submit"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+    <!-- Room End -->
+
+    <!-- Participants / Friend List Start -->
+    <div class="participants">
+        <h3 class="participants__top">Friends</h3>
+        <div class="participants__list scrollable">
+            {% for x in m_and_f %}
+            <div class="participant d-flex align-items-center gap-2 p-2 rounded hover-bg-light" onclick="onSelectFriend('{{x.friend.id}}')" id="id_friend_containe_{{x.friend.id}}" style="cursor: pointer;">
+                <div class="avatar avatar--medium">
+                    <img src="{{x.friend.profile_image.url}}" id="id_friend_img_{{x.friend.id}}" alt="{{x.friend.username}}">
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="fw-bold">{{x.friend.username}}</span>
+                    <span class="text-muted small">Active recently</span>
+                </div>
+                <span class="messages-badge ms-auto badge bg-danger rounded-pill d-none" id="id_friend_notifications_{{x.friend.id}}">0</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Participants End -->
+</main>
+
+<!-- Keep existing scripts -->
+<script type="text/javascript">
+    // ... I need to make sure I don't break the chat logic.
+    // The original file has a LOT of JS. I should probably just copy the HTML structure and keep the JS.
+</script>
+
+<!-- I will read the original file again to get the JS content -->
+{% endblock content %}

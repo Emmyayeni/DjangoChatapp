@@ -2,135 +2,75 @@
 {% load static %}
 
 {% block content %}
-
-
-<style type="text/css">
-	.image-container{
-		max-width: 250px;
-		height: auto;
-		position: relative;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	.field-heading{
-		color: #737373;
-	}
-	#id_confirm{
-		color: green;
-	}
-	#id_confirm:hover {
-		opacity: 0.3;
-	}
-	#id_cancel:hover {
-		opacity: 0.3;
-	}
-	#id_cancel{
-		color: red;
-		cursor: pointer;
-	}
-	#id_confirm{
-		cursor: pointer;
-	}
-	.material-icons{
-		font-size: 30px;
-	}
-	.material-icons:hover{
-		cursor: pointer;
-	}
-</style>
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="style.css" />
-    <title>StudyBuddy - Find study partners around the world!</title>
-  </head>
-
-  <body>
-    <main class="update-account layout">
-        <div class="container">
-            <div class="layout__box">
-                <div class="layout__boxHeader">
-                    <div class="layout__boxTitle">
-                        <a href="profile.html">
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                viewBox="0 0 32 32">
-                                <title>arrow-left</title>
-                                <path
-                                    d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-                                </path>
-                            </svg>
-                        </a>
-                        <h3>Edit your profile</h3>
-                    </div>
-                </div>
-                <div class="layout__body">
-					<div class="mb-2" id="id_image_crop_confirm">
-						<span id="id_cancel" class="bi bi-cancel">cancel</span>
-						<span id="id_confirm" class="bi bi-check" ></span>
-					</div>
-					<div class="image-container" id="id_image_container">
-						<img class="border border-dark rounded-circle img-fluid my-auto profile-image" id="id_profile_image_display" src="{{form.initial.profile_image.url}}" style="width:150px;height:150px;">
-					  <div class="middle" id="id_middle_container">
-						  <div class="bi bi-camera" id="id_text"></div>
-					  </div>
-					</div>
-                    <form class="form" method="POST" >
-						{% csrf_token %}
-						<input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
-						<div class="mt-4 checkbox">
-							<label>
-								<input type="checkbox" name="hide_email" id="id_input_hide_email" {% if form.initial.hide_email %}checked{%endif%}>
-								Hide Email
-							</label>
-							  
-						</div>
-						<div class="form__group">
-							<label for="username">Username</label>
-							<input id="username" name="username" type="text" placeholder="E.g. John doe" value="{{form.initial.username}}" />
-						</div>
-
-						<div class="form__group">
-							<label for="email">Email</label>
-							<input id="email" name="email" type="text" placeholder="E.g. john@email.com" value="{{form.initial.email}}" />
-						</div>
-
-                        <div class="form__group">
-                            <label for="user_bio">Bio</label>
-                            <textarea name="bio" id="user_bio"  value="{{form.initial.bio}}">{{form.initial.bio}}</textarea>
-                        </div>
-                        <div class="form__action">
-                            <a class="btn btn--dark" href="/">Cancel</a>
-                            <button class="btn btn--main" type="submit">Update</button>
-                        </div>
-					
-                    </form>
-					{% for field in form %}
-					<p>
-					{% for error in field.errors %}
-					<p style="color: red">{{ error }}</p>
-					{% endfor %}
-					</p>
-					{% endfor %}
-					{% if form.non_field_errors %}
-					<div style="color: red">
-					<p>{{form.non_field_errors}}</p>
-					</div>
-
-					{% endif %}
+    <main class="update-account layout--1 pt-5">
+        <div class="layout__box card">
+            <div class="card-header d-flex align-items-center justify-content-between bg-white border-bottom-0 pt-4 px-4">
+                <div class="layout__boxTitle d-flex align-items-center gap-3">
+                    <a href="{% url 'account:view' user_id=request.user.id %}" class="text-decoration-none text-dark">
+                        <i class="fas fa-arrow-left fa-lg"></i>
+                    </a>
+                    <h3 class="m-0">Edit your profile</h3>
                 </div>
             </div>
+            <div class="card-body p-4">
+                <!-- Image Cropper Controls -->
+                <div class="mb-2 d-none" id="id_image_crop_confirm">
+                    <span id="id_cancel" class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Cancel</span>
+                    <span id="id_confirm" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Confirm</span>
+                </div>
+                
+                <div class="image-container text-center mb-4 position-relative" id="id_image_container" style="cursor: pointer;">
+                    <img class="rounded-circle img-fluid profile-image" id="id_profile_image_display" src="{{form.initial.profile_image.url}}" style="width:150px;height:150px; object-fit: cover;">
+                    <div class="middle position-absolute top-50 start-50 translate-middle" id="id_middle_container" style="opacity: 0; transition: .5s ease;">
+                        <div class="btn btn-light rounded-circle p-2" id="id_text"><i class="fas fa-camera fa-2x text-primary"></i></div>
+                    </div>
+                </div>
+
+                <form class="form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" name="hide_email" id="id_input_hide_email" {% if form.initial.hide_email %}checked{%endif%}>
+                        <label class="form-check-label" for="id_input_hide_email">Hide Email</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input id="username" name="username" type="text" class="form-control" placeholder="E.g. John doe" value="{{form.initial.username}}" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input id="email" name="email" type="text" class="form-control" placeholder="E.g. john@email.com" value="{{form.initial.email}}" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="user_bio" class="form-label">Bio</label>
+                        <textarea name="bio" id="user_bio" class="form-control" rows="4">{{form.initial.bio}}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a class="btn btn-secondary" href="{% url 'account:view' user_id=request.user.id %}">Cancel</a>
+                        <button class="btn btn--main" type="submit">Update</button>
+                    </div>
+                
+                    {% if form.errors %}
+                        <div class="alert alert-danger mt-3">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                            {% if form.non_field_errors %}
+                                <p class="mb-0">{{form.non_field_errors}}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
         </div>
-      </div>
     </main>
-  </body>
-</html>
-
-
 
 <script type="text/javascript">
 
@@ -146,9 +86,9 @@
 
 	function enableImageOverlay(){
 		var text = document.getElementById("id_text")
-		text.style.color = "#5995fd"
-		text.style.fontSize = "30px"
-		text.style.padding = "2px"
+		// text.style.color = "#5995fd"
+		// text.style.fontSize = "30px"
+		// text.style.padding = "2px"
 		text.style.cursor = "pointer"
 
 		var profileImage = document.getElementById("id_profile_image")
@@ -171,12 +111,12 @@
 
 		var imageContainer = document.getElementById("id_image_container")
 		imageContainer.addEventListener("mouseover", function( event ) { 
-			profileImage.style.opacity = "0.3"
+			document.getElementById("id_profile_image_display").style.opacity = "0.3"
 			middleContainer.style.opacity = "1"
 		})
 
 		imageContainer.addEventListener("mouseout", function( event ) { 
-			profileImage.style.opacity = "1"
+			document.getElementById("id_profile_image_display").style.opacity = "1"
 			middleContainer.style.opacity = "0"
 		})
 
@@ -349,16 +289,4 @@
 	}
 
 </script>
-
-
-
 {% endblock content %}
-
-
-
-
-
-
-
-
-
