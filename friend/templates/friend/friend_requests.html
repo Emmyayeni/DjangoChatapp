@@ -3,74 +3,90 @@
 
 {% block content %}
 
-<main class="layout--1 pt-5">
-    <div class="layout__box card">
-        <div class="card-header bg-white border-bottom-0 pt-4 px-4">
-            <h2 class="m-0">Friend Requests</h2>
-        </div>
-        
-        <div class="card-body p-4">
-            <!-- Tabs or Filters -->
-            <div class="d-flex gap-2 mb-4">
-                <a class="btn btn--main btn--pill" href="#">Requests</a>
-                <a class="btn btn-outline-secondary btn--pill" href="#">Suggestions</a>
-                <a class="btn btn-outline-secondary btn--pill" href="#">Your Friends</a>
-            </div>
-
-            {% if friend_requests %}
-            <div class="d-flex flex-column gap-3">
-                {% for request in friend_requests %}
-                <div class="roomListRoom d-flex align-items-center justify-content-between p-3">
-                    <a href="{% url 'account:view' user_id=request.sender.id %}" class="d-flex align-items-center gap-3 text-decoration-none text-dark">
-                        <div class="avatar avatar--medium">
-                            <img src="{{request.sender.profile_image.url}}" alt="{{request.sender.username}}">
-                        </div>
-                        <div>
-                            <h4 class="m-0">{{request.sender.username}}</h4>
-                            <small class="text-muted">Sent you a friend request</small>
-                        </div>
-                    </a>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-danger btn-sm" id="id_cancel_{{request.sender.id}}" onclick='triggerDeclineFriendRequest("{{request.id}}")'>Decline</button>
-                        <button class="btn btn--main btn-sm" id="id_confirm_{{request.sender.id}}" onclick='triggerAcceptFriendRequest("{{request.id}}")'>Accept</button>
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm rounded-lg" style="min-height: 80vh;">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
+                    <h2 class="h3 fw-bold mb-3">Friend Requests</h2>
+                    
+                    <!-- Tabs or Filters -->
+                    <div class="d-flex gap-2 mb-3 overflow-auto pb-2">
+                        <a class="btn btn-primary rounded-pill px-3 fw-bold" href="#">Requests</a>
+                        <a class="btn btn-light rounded-pill px-3 fw-bold" href="#">Suggestions</a>
+                        <a class="btn btn-light rounded-pill px-3 fw-bold" href="#">Your Friends</a>
                     </div>
                 </div>
-                {% endfor %}
+                
+                <div class="card-body p-4">
+                    {% if friend_requests %}
+                    <div class="row g-3">
+                        {% for request in friend_requests %}
+                        <div class="col-12 col-md-6 mb-3">
+                             <div class="friend-card card h-100 border-0 shadow-sm p-3">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <a href="{% url 'account:view' user_id=request.sender.id %}" class="avatar avatar--medium">
+                                        <img src="{{request.sender.profile_image.url}}" alt="{{request.sender.username}}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                                    </a>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <a href="{% url 'account:view' user_id=request.sender.id %}" class="text-decoration-none text-dark">
+                                            <h4 class="mb-1 fw-bold text-truncate" style="font-size: 1rem;">{{request.sender.username}}</h4>
+                                        </a>
+                                        <small class="text-muted d-block text-truncate">Sent a request</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2 mt-auto">
+                                    <button class="btn btn-primary w-100 fw-bold py-2" id="id_confirm_{{request.sender.id}}" onclick='triggerAcceptFriendRequest("{{request.id}}")' style="font-size: 0.9rem;">Confirm</button>
+                                    <button class="btn btn-light w-100 fw-bold py-2 text-dark" id="id_cancel_{{request.sender.id}}" onclick='triggerDeclineFriendRequest("{{request.id}}")' style="font-size: 0.9rem;">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="d-flex flex-column align-items-center justify-content-center py-5 h-100 mt-5">
+                        <div class="text-muted opacity-50 mb-3">
+                            <i class="fas fa-users-slash fa-4x"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">No Friend Requests</h4>
+                        <p class="text-muted">You don't have any pending requests right now.</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-            {% else %}
-            <div class="text-center py-5 text-muted">
-                <i class="fas fa-user-friends fa-3x mb-3"></i>
-                <p>No pending friend requests.</p>
+
+            {% if other_users %}
+            <div class="card border-0 shadow-sm rounded-lg mt-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
+                    <h2 class="h4 fw-bold mb-0">People You May Know</h2>
+                </div>
+                <div class="card-body p-4">
+                     <div class="row g-3">
+                        {% for user in other_users %}
+                        <div class="col-12 col-md-6 mb-3">
+                            <div class="friend-card card h-100 border-0 shadow-sm p-3">
+                                 <div class="d-flex align-items-center gap-3 mb-3">
+                                    <a href="{% url 'account:view' user_id=user.id %}" class="avatar avatar--medium">
+                                        <img src="{{user.profile_image.url}}" alt="{{user.username}}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                                    </a>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <a href="{% url 'account:view' user_id=user.id %}" class="text-decoration-none text-dark">
+                                            <h4 class="mb-1 fw-bold text-truncate" style="font-size: 1rem;">{{user.username}}</h4>
+                                        </a>
+                                    </div>
+                                </div>
+                                <a href="{% url 'account:view' user_id=user.id %}" class="btn btn-light btn-sm text-primary fw-bold w-100">View Profile</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
             {% endif %}
         </div>
     </div>
-
-    {% if other_users %}
-    <div class="layout__box card mt-4">
-        <div class="card-header bg-white border-bottom-0 pt-4 px-4">
-            <h2 class="m-0">People You May Know</h2>
-        </div>
-        <div class="card-body p-4">
-            <div class="d-flex flex-column gap-3">
-                {% for user in other_users %}
-                <div class="roomListRoom d-flex align-items-center justify-content-between p-3">
-                    <a href="{% url 'account:view' user_id=user.id %}" class="d-flex align-items-center gap-3 text-decoration-none text-dark">
-                        <div class="avatar avatar--medium">
-                            <img src="{{user.profile_image.url}}" alt="{{user.username}}">
-                        </div>
-                        <div>
-                            <h4 class="m-0">{{user.username}}</h4>
-                        </div>
-                    </a>
-                    <a href="{% url 'account:view' user_id=user.id %}" class="btn btn--main btn-sm">View Profile</a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
 </main>
+
 
 <script type="text/javascript">
 	function onFriendRequestAccepted(){
@@ -91,6 +107,6 @@
 </script>
 
 {% include 'friend/snippets/accept_friendrequest.html' %}
-{% include 'friend/snippets/decline_friendrequest.html' %}
+{% include 'friend/snippets/decline_friend_request.html' %}
 
 {% endblock content %}
